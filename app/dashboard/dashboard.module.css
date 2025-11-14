@@ -1,0 +1,100 @@
+.form_coachAI{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: white;
+	padding: 24px 52px;
+	border-radius: 10px;
+}
+.form_coachAI input{
+	color:var(--primary);
+	font-weight: 500;
+	font-size: 16px;
+	width: 70%;
+}
+.form_coachAI button{
+	background-color:var(--primary);
+	font-weight: 500;
+	font-size: 16px;
+	color: white;
+	padding: 16px 40px ;
+	border-radius: 10px;
+}
+.dashboard_profile_container{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: linear-gradient(180deg,rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.3) 100%);
+	padding: 32px 52px;
+	border-radius: 20px;
+	margin-top: 2rem;
+
+}
+.dashboard_profile{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+.dashboard_profile p{
+	color: #707070;
+}
+.dashboard_distance{
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+.dashboard_distance p{
+	padding-right: 19px;
+	color: #707070;
+}
+.dashboard_distance_nbre{
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	padding: 28px 27px;
+	background-color: var(--primary);
+	color: white;
+	gap: 19px;
+	border-radius: 10px;
+	border: 1px solid var(--primary);
+}
+.dashboard_performance_title{
+	margin: 5rem 0 1rem 0;
+}
+.dashboard_performance_month{
+	display: flex;
+	justify-content: space-between;
+	align-items: start;
+	margin-bottom: 3rem;
+}
+.dashboard_performance_week_date, .dashboard_performance_activity p{
+	color: #707070;
+}
+.dashboard_performance_week{
+	display: flex;
+	justify-content: space-between;
+	align-items: start;
+}
+/* .dashboard_performance_activities{
+	background-color: white;
+	padding: 20px 30px;
+	border-radius: 10px;
+	gap: 19px;
+} */
+.dashboard_performance_activity{
+	background-color: white;
+	padding: 20px 30px;
+	border-radius: 10px;
+	width: 572px;
+	margin-bottom: 1.5rem;
+}
+.dashboard_performance_activity span{
+	font-weight: 500;
+	font-size: 16px;
+}
+.dashboard_performance_duration{
+	color: var(--primary);
+}
+.dashboard_performance_distance{
+	color: var(--bpmRed);
+}

@@ -1,0 +1,49 @@
+.profile_container{
+	display: flex;
+	justify-content: space-around;
+	align-items: start;
+	height: 100vh;
+}
+.profile_photo{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	background-color: white;
+	width: 508px;
+	border-radius: 10px;
+	padding: 0.5rem;
+	margin-bottom: 1.5rem;
+}
+.profile_content{
+	background-color: white;
+	border-radius: 10px;
+	padding: 2rem;
+}
+.profile_content h5{
+	margin-top: 1rem;
+	color: #707070;
+}
+.profile_title{
+	border-bottom:1px solid #e7e7e7;
+	padding-bottom: 1rem;
+}
+.profile_date_membership{
+	color: #707070;
+}
+.profile_all_stats{
+	display: grid;
+	grid-template-columns: repeat(2,1fr);
+	gap: 19px;
+	margin: 2rem 0;
+}
+.profile_one_stat{
+	background-color: var(--primary);
+	color: white;
+	padding: 20px 30px;
+	border-radius: 10px;
+	width: 278px;
+}
+.profile_one_stat span{
+	font-size: 16px;
+	font-weight: 500;
+}
