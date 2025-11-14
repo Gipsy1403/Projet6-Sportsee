@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+
+
+:root {
+  --background: #f2f3ff;
+  --foreground: #171717;
+  --primary:#0b23f4;
+  --secondary:#b6bdfc;
+  --bpmRed: #f4320b;
+  --bpmPink: #fcc1b6;
+  
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter);
+  /* margin: 4em; */
+  max-width: 1440px;
+}
+h1{
+	font-weight: 900;
+	font-size: 48px;
+}
+h2{
+	font-weight: 700;
+	font-size: 36px;
+}
+h3{
+	font-weight: 600;
+	font-size: 28px;
+}
+h4{
+	font-weight: 500;
+	font-size: 22px;
+}
+h5{
+	font-weight: 500;
+	font-size: 16px;
+}
+p,li{
+	font-weight: 400;
+	font-size: 14px;
+}
+/* *********HEADER*********** */
+header{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 49px;
+	margin: 3rem 7rem 5rem 7rem;
+}
+.logo{
+	width: 157px;
+	height: 23px;
+	cursor: pointer;
+}
+.bar_navigation{
+	background-color: white;
+	border-radius: 60px;
+	padding: 10px 30px;
+}
+.bar_navigation ul{
+	display: flex;
+}
+.bar_navigation li{
+	padding: 0 20px;
+	cursor: pointer;
+}
+.bar_navigation li:last-child{
+	border-left: 2px solid var(--primary) ;
+	color: var(--primary)
+}
+
+/* **********FOOTER********** */
+footer{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 41px;
+	background-color: white;
+	padding: 10px 30px;
+	padding: 0 5rem;
+}
+.icon_copyright{
+	font-size: 12px;
+}
+.bar_footer ul{
+	display: flex;
+}
+.bar_footer li{
+	padding: 0 30px;
+	cursor: pointer;
+}
