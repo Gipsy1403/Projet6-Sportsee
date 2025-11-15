@@ -1,7 +1,7 @@
 import { Inter} from "next/font/google";
 import "./globals.css";
-import Header from "@/Composents/Header";
-import Footer from "@/Composents/Footer";
+import Header from "@/Components/Header";
+import Footer from "@/Components/Footer";
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
@@ -19,10 +19,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body
-        className={`${inter.variable} antialiased`}
-      >
+    <html lang="fr">
+      <body suppressHydrationWarning className={`${inter.variable}`}>
 	   <Header />
         {children}
 	   <Footer />

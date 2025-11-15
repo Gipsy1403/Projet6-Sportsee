@@ -1,17 +1,18 @@
-import MockTest from "@/Composents/MockTest";
-import Image from "next/image";
-import Link from "next/link";
 import PageLogin from "./login/page";
 import PageProfile from "./profile/page";
 import PageDashboard from "./dashboard/page";
+import users from "@/src/mocks/users.json"
+
 
 export default function Home() {
+	const user=users[0];
+	//  console.log("Mon utilisateur :", user.runningData);
   return (
     <div>
       <main>
-		<PageProfile />
-		<PageDashboard/>
-		<MockTest />
+		<h1>coucou {user.userInfos.firstName}</h1>
+		<PageProfile user={user}/>
+		<PageDashboard user={user}/>
       </main>
     </div>
   );

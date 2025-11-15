@@ -1,14 +1,19 @@
+"use client";
 import Image from "next/image";
 import Styles from "./dashboard.module.css";
+import { useState } from "react";
+import RunningChart from "@/Components/GraphOne";
 
-export default function PageDashboard() {
+export default function PageDashboard({user}) {
+	const[search,setSearch]=useState("");
   return (
 	<section >
 		<form className={Styles.form_coachAI}>
 			<input 
 			type="text"
-			value=""
+			value={search}
 			placeholder="Posez vos questions sur votre programme, vos performances ou vos objectifs."
+			onChange={(e)=>setSearch(e.target.value)}
 			 />
 			 <button>Lancer une conversation</button>
 		</form>
@@ -38,7 +43,7 @@ export default function PageDashboard() {
 		</div>
 		<h4 className={Styles.dashboard_performance_title}>Vos dernières performances</h4>
 		<div className={Styles.dashboard_performance_month}>
-			<p>1er tableau</p>
+			<RunningChart user={user}/>
 			<p>1ème tableau</p>
 		</div>
 		<div>
