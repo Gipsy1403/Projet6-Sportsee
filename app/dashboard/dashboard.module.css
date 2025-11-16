@@ -61,12 +61,47 @@
 .dashboard_performance_title{
 	margin: 5rem 0 1rem 0;
 }
+/* ***************Graphiques des performances*************** */
+
 .dashboard_performance_month{
 	display: flex;
 	justify-content: space-between;
 	align-items: start;
 	margin-bottom: 3rem;
+	margin-top: 2rem;
 }
+.chart_bpm, .chart_km{
+	background-color: white;
+	padding: 16px 40px 24px 0;
+	border-radius: 10px;
+}
+.bpm_header, .km_header{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-left: 2.5rem;
+}
+.bpm_header h4{
+	color: var(--bpmRed);
+}
+.km_header h4{
+	color: var(--primary);
+}
+.bpm_header button, .km_header button{
+	padding: 2px 8px;
+	border: 1px solid #717171;
+	border-radius: 10px;
+}
+.bpm_header span, .km_header span{
+	font-size: 12px;
+}
+.bpm_title, .km_title{
+	font-size: 12px;
+	color: #707070;
+	margin-bottom: 1rem;
+	margin-left: 2.5rem;
+}
+/* *********************************** */
 .dashboard_performance_week_date, .dashboard_performance_activity p{
 	color: #707070;
 }
@@ -98,3 +133,4 @@
 .dashboard_performance_distance{
 	color: var(--bpmRed);
 }
+

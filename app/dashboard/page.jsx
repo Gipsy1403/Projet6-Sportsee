@@ -3,6 +3,7 @@ import Image from "next/image";
 import Styles from "./dashboard.module.css";
 import { useState } from "react";
 import RunningChart from "@/Components/GraphOne";
+import WeekHeartRateChart from "@/Components/GraphTwo";
 
 export default function PageDashboard({user}) {
 	const[search,setSearch]=useState("");
@@ -44,7 +45,7 @@ export default function PageDashboard({user}) {
 		<h4 className={Styles.dashboard_performance_title}>Vos dernières performances</h4>
 		<div className={Styles.dashboard_performance_month}>
 			<RunningChart user={user}/>
-			<p>1ème tableau</p>
+			<WeekHeartRateChart user={user}/>
 		</div>
 		<div>
 			<h4>Cette semaine</h4>
