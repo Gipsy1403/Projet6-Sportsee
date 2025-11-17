@@ -101,14 +101,37 @@
 	margin-bottom: 1rem;
 	margin-left: 2.5rem;
 }
-/* *********************************** */
-.dashboard_performance_week_date, .dashboard_performance_activity p{
+/* *****************Graphiques hebdo****************** */
+.dashboard_performance_week_date, .dashboard_performance_activity p, .chart_objectif p{
 	color: #707070;
 }
 .dashboard_performance_week{
 	display: flex;
 	justify-content: space-between;
 	align-items: start;
+	margin-top: 2rem;
+	margin-bottom: 3rem;
+}
+.chart_objectif{
+	background-color: white;
+	padding: 16px 38px 32px 38px ;
+	border-radius: 10px;
+}
+.chart_objectif_title{
+	display: flex;
+	align-items: baseline;
+}
+.objectif_title h3{
+	color: var(--primary);
+}
+.objectif_subtitle{
+	color: var(--secondary);
+	font-size: 16px;
+	font-weight: 500;
+}
+.chart_objectif_label{
+	font-size: 10px;
+	font-weight: 400;
 }
 /* .dashboard_performance_activities{
 	background-color: white;

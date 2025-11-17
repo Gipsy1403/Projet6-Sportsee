@@ -11,7 +11,7 @@
         "height": 165,
         "profilePicture": "/public/globe.svg"
     },
-    "weeklyGoal":2,
+    "weeklyGoal":6,
     "username": "sophiemartin",
     "password": "password123",
     "runningData":[
@@ -698,7 +698,7 @@
         "caloriesBurned": 380
     },
     {
-        "date": "2025-11-12",
+        "date": "2025-11-17",
         "distance": 7,
         "duration": 45,
         "heartRate": {
@@ -709,7 +709,7 @@
         "caloriesBurned": 495
     },
     {
-        "date": "2025-11-13",
+        "date": "2025-11-18",
         "distance": 5.5,
         "duration": 36,
         "heartRate": {
@@ -720,21 +720,21 @@
         "caloriesBurned": 390
     },
     {
-    "date": "2025-11-14",
+    "date": "2025-11-19",
     "distance": 5.2,
     "duration": 35,
     "heartRate": { "min": 140, "max": 175, "average": 160 },
     "caloriesBurned": 380
   },
   {
-    "date": "2025-11-15",
+    "date": "2025-11-21",
     "distance": 6.0,
     "duration": 40,
     "heartRate": { "min": 138, "max": 172, "average": 158 },
     "caloriesBurned": 420
   },
   {
-    "date": "2025-11-16",
+    "date": "2025-11-22",
     "distance": 5.5,
     "duration": 37,
     "heartRate": { "min": 142, "max": 176, "average": 164 },

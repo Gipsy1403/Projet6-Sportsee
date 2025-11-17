@@ -10,7 +10,6 @@ export default function Home() {
   return (
     <div>
       <main>
-		<h1>coucou {user.userInfos.firstName}</h1>
 		<PageProfile user={user}/>
 		<PageDashboard user={user}/>
       </main>

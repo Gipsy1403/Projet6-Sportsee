@@ -6,8 +6,6 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import { BarChart, XAxis, YAxis, Tooltip, Legend, Bar , ReferenceLine } from "recharts";
 import Styles from "@/app/dashboard/dashboard.module.css";
 
-
-
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
@@ -18,7 +16,6 @@ function groupByWeek(user, startDate) {
 	const weeks = [0, 1, 2, 3].map(i => {
 	const weekStart = start.add(i, "week");
 	const weekEnd = start.add(i + 1, "week");
-
 
 	const totalDistance = user.runningData
 		.filter(a =>
