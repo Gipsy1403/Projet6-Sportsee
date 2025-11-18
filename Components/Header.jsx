@@ -16,9 +16,9 @@ export default function Header(){
 			</Link>
 			<div className="bar_navigation">
 				<ul>
-					<li><Link href="/app/dashboard/page.jsx">Dashboard</Link></li>
+					<li><Link href="/dashboard">Dashboard</Link></li>
 					<li>Coach AI</li>
-					<li><Link href="/app/profile/page.jsx">Mon profil</Link></li>
+					<li><Link href="/profile">Mon profil</Link></li>
 					<li>Se déconnecter</li>
 				</ul>
 			</div>

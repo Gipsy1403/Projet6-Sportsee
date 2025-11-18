@@ -4,6 +4,7 @@ import Header from "@/Components/Header";
 import Footer from "@/Components/Footer";
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import { GlobalProvider } from "@/Components/GlobalContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -19,12 +20,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fr">
-      <body suppressHydrationWarning className={`${inter.variable}`}>
-	   <Header />
-        {children}
-	   <Footer />
-      </body>
-    </html>
+	<html lang="fr">
+		<body suppressHydrationWarning className={`${inter.variable}`}>
+		<GlobalProvider>
+			<Header />
+			{children}
+			<Footer />
+		</GlobalProvider>
+		</body>
+	</html>
   );
 }

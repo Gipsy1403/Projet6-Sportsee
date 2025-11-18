@@ -2,10 +2,42 @@
 import { dataMocks } from "@/src/mocks/users";
 import { useState } from "react";
 import Styles from "@/app/login/login.module.css"
+// import { useUser } from "./GlobalContext";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+	// const {user}=useUser();
 	const [username, setUsername]=useState("");
 	const [password, setPassword]=useState("");
+	const [message, setMessage] = useState("");
+	const router=useRouter();
+
+	const handleLogin = async (e) => {
+		e.preventDefault();
+		try {
+			const res = await fetch("http://localhost:8000/api/login", {
+			method: "POST",
+			credentials: "include",
+			headers: {
+			"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ username, password }),
+			});
+
+			const data = await res.json();
+
+			if (res.ok) {
+				setMessage("Connexion réussie !");
+				console.log("Login success :", data);
+				router.push("/profile");
+			} else {
+				setMessage(data.message || "Erreur lors du login");
+			}
+		} catch (err) {
+			console.error(err);
+			setMessage("Erreur réseau");
+		}
+	};
 
   return (
 	<form className={Styles.form_login}>
@@ -26,7 +58,8 @@ export default function Login() {
 			value={password}
 			onChange={(e) => setPassword(e.target.value)}
 		/>
-		<button className={Styles.btn_login}>Se connecter</button>
+		<button type="submit" className={Styles.btn_login} onClick={handleLogin}>Se connecter</button>
+		{message && <p className={Styles.message}>{message}</p>}
 		<p className={Styles.mdp_forget}>Mot de passe oublié ?</p>
 		
 	</form>

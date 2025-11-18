@@ -6,6 +6,7 @@ import RunningChart from "@/Components/GraphOne";
 import WeekHeartRateChart from "@/Components/GraphTwo";
 import DateFormated from "@/Components/DateFormated";
 import ObjectifsChart from "@/Components/GraphThree";
+// import { useUser } from "@/Components/GlobalContext";
 
 export function currentWeek(){
 	const today=new Date();
@@ -51,8 +52,12 @@ function weekPeriod() {
 	};
 }
 
-export default function PageDashboard({user}) {
+export default function PageDashboard() {
+	// const{user, loading, error}=useUser();
 	const[search,setSearch]=useState("");
+
+	// if (loading) return <p>Chargement...</p>;
+	// if (error) return <p>{error}</p>;
 
   return (
 	<section >
