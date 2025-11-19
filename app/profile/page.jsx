@@ -20,41 +20,41 @@ function ConvertMinutesToHours({statistics}){
 
 export default function PageProfile() {
 	// const{user, loading,error}=useUser();
-  const [profile, setProfile] = useState(null);
-  const [statistics, setStatistics] = useState(null);
+	// const [profile, setProfile] = useState(null);
+	// const [statistics, setStatistics] = useState(null);
 
-  const [message, setMessage] = useState("");
+	// const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    const handleGetProfile = async () => {
-      try {
-        const res = await fetch("http://localhost:8000/api/user-info", {
-          method: "GET",
-          credentials: "include",
-        });
+	// useEffect(() => {
+	// const handleGetProfile = async () => {
+	// 	try {
+	// 	const res = await fetch("http://localhost:8000/api/user-info", {
+	// 		method: "GET",
+	// 		credentials: "include",
+	// 	});
 
-        const data = await res.json();
+	// 	const data = await res.json();
 
-        if (res.ok) {
-          setProfile(data.profile);
-          setStatistics(data.statistics);
+	// 	if (res.ok) {
+	// 		setProfile(data.profile);
+	// 		setStatistics(data.statistics);
 
-          console.log("Profil :", data);
-        } else {
-          setMessage(data.message || "Erreur lors de la récupération du profil");
-        }
-      } catch (err) {
-        console.error(err);
-        setMessage("Erreur réseau");
-      }
-    };
+	// 		console.log("Profil :", data);
+	// 	} else {
+	// 		setMessage(data.message || "Erreur lors de la récupération du profil");
+	// 	}
+	// 	} catch (err) {
+	// 	console.error(err);
+	// 	setMessage("Erreur réseau");
+	// 	}
+	// };
 
-    handleGetProfile();
-  }, []);
+	// handleGetProfile();
+	// }, []);
 
- if (!profile) {
-  return <p>Chargement du profil...</p>;
-}
+	// if (!profile) {
+	// return <p>Chargement du profil...</p>;
+	// }
 
 
 	const heightCm= profile.height;
@@ -69,6 +69,7 @@ export default function PageProfile() {
 	};
 	// if (loading) return <p>Chargement...</p>;
   	// if (error) return <p>{error}</p>;
+console.log("Gender reçu :", profile.gender);
 
   	return (
 		<section className={Styles.profile_container}>
@@ -93,32 +94,37 @@ export default function PageProfile() {
 				</div>
 			</div>
 			<div>
-				
+		
 				<h4>Vos statistiques</h4>
 				<p className={Styles.profile_date_membership}>depuis le <DateFormated date={profile.createdAt}/></p>
-			
+		
 				<div className={Styles.profile_all_stats}>
+						{statistics && (
+							<>
 					<div className={Styles.profile_one_stat}>
 						<p>Temps total couru</p>
-						<ConvertMinutesToHours statistics={profile.statistics}/>
-						<h4>{profile.statistics.totalDuration} <span>min</span></h4>
+						<ConvertMinutesToHours statistics={statistics}/>
+						<h4>{statistics.totalDuration} <span>min</span></h4>
 					</div>
-					<div className={Styles.profile_one_stat}> 
+					<div className={Styles.profile_one_stat}>
 						<p>Calories brûlées</p>
-						<h4>{profile.statistics.totalCalories} <span>cal</span></h4>
+						<h4>{statistics.totalCalories} <span>cal</span></h4>
 					</div>
 					<div className={Styles.profile_one_stat}>
 						<p>Distance totale parcourues</p>
-						<h4>{profile.statistics.totalDistance} <span>km</span></h4>
+						<h4>{statistics.totalDistance} <span>km</span></h4>
 					</div>
 					<div className={Styles.profile_one_stat}>
 						<p>Nombre de jours de repos</p>
-						<h4>{profile.statistics.totalRestDays} <span>jours</span></h4>
+						<h4>{statistics.totalRestDays} <span>jours</span></h4>
 					</div>
 					<div className={Styles.profile_one_stat}>
 						<p>Nombre de sessions</p>
-						<h4>{profile.statistics.totalSessions} <span>sessions</span></h4>
+						<h4>{statistics.totalSessions} <span>sessions</span></h4>
 					</div>
+		
+							</>
+						)}
 				</div>
 			</div>
 		</section>

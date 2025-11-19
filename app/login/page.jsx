@@ -3,26 +3,6 @@ import Image from "next/image";
 import Styles from "./login.module.css"
 
 export default function PageLogin() {
-	
-// 	 const handleLogin = async (e) => {
-//     e.preventDefault(); // empêche le rechargement de la page
-
-//     const response = await fetch("http://localhost:8000/api/login", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       credentials: "include", // 🔥 important pour les cookies
-//       body: JSON.stringify({ username, password }),
-//     });
-
-//     const data = await response.json();
-
-//     if (response.ok) {
-//       console.log("Connexion réussie !", data);
-//       // ➕ Redirection vers une page protégée, par ex. /dashboard
-//     } else {
-//       console.error("Erreur :", data.message);
-//     }
-//   };
 
   return (
 	<section className={Styles.login_container}>

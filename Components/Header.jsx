@@ -1,9 +1,18 @@
+"use client";
 import Image from "next/image"
 import "@/app/globals.css"
 import Link from "next/link"
 
 
 export default function Header(){
+	const handleLogout = async () => {
+		await fetch("/api/logout", {
+			method: "POST",
+			credentials: "include" // très important pour envoyer le cookie
+			});
+
+		window.location.href = "/login"; // redirection après déconnexion
+	};
 	return(
 		<header>
 			<Link href="/">
@@ -19,7 +28,7 @@ export default function Header(){
 					<li><Link href="/dashboard">Dashboard</Link></li>
 					<li>Coach AI</li>
 					<li><Link href="/profile">Mon profil</Link></li>
-					<li>Se déconnecter</li>
+					<li onClick={handleLogout}>Se déconnecter</li>
 				</ul>
 			</div>
 		</header>

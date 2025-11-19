@@ -7,6 +7,7 @@ import {ResponsiveContainer,BarChart,Bar,Line,LineChart,XAxis,YAxis,CartesianGri
 import { useState } from "react";
 import "dayjs/locale/fr";
 import Styles from "@/app/dashboard/dashboard.module.css";
+import { useMockData } from "./GlobalContextMOCK";
 
 dayjs.extend(isoWeek);
 dayjs.extend(weekday);
@@ -47,9 +48,10 @@ function getWeekHeartRateData(runningData, selectedDate){
 };
 
 export default function WeekHeartRateChart({ user }){
+	const { activities } = useMockData();
 	const [selectedDate, setSelectedDate] = useState(new Date());
  
-	const weekData = getWeekHeartRateData(user.runningData, selectedDate);
+	const weekData = getWeekHeartRateData(activities, selectedDate);
 	// console.log("weekdata:", weekData)
 	const weekStart = dayjs(selectedDate).isoWeekday(1); 
 	const weekEnd = dayjs(selectedDate).isoWeekday(7); 
