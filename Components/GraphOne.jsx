@@ -10,14 +10,18 @@ dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
 // Fonction pour grouper les courses par semaine
-function groupByWeek(user, startDate) {
-	if (!user || !user.runningData) return [];
+function groupByWeek(runningData, startDate) {
+	console.log("groupByWeek called with startDate:", startDate.format("YYYY-MM-DD"));
+	// if (!runningData) {
+	// 	console.log("No runningData provided");
+	// 	return [];}
+
 	const start = dayjs(startDate);
 	const weeks = [0, 1, 2, 3].map(i => {
-	const weekStart = start.add(i, "week");
-	const weekEnd = start.add(i + 1, "week");
+	const weekStart = start.add(i*7,"day");
+	const weekEnd = weekStart.add(6, "day");
 
-	const totalDistance = user.runningData
+	const totalDistance = runningData
 		.filter(a =>
 		dayjs(a.date).isSameOrAfter(weekStart) &&
 		dayjs(a.date).isSameOrBefore(weekEnd) 
@@ -40,19 +44,18 @@ function averageDistance(weeks) {
 }
 
 // Composant principal
-export default function RunningChart({ user }) {
-	const [startDate, setStartDate] = useState(dayjs().subtract(4, "week"));
-
-
-//     console.log("Running data:", user?.runningData);
-
-	// Calcul des semaines et moyenne
-	const weeks = groupByWeek(user, startDate);
-	const average = averageDistance(weeks);
-
-	if (!user || !user.runningData) {
+export default function RunningChart({ runningData }) {
+	const [startDate, setStartDate] = useState(dayjs().subtract(27, "day"));
+	
+	if (!runningData) {
 		return <p>Chargement des données...</p>;
 	}
+
+	// Calcul des semaines et moyenne
+	const weeks = groupByWeek(runningData, startDate);
+	const average = averageDistance(weeks);
+	const endDate=startDate.add(27,"day");
+
 
 	return (
 		<section>
@@ -60,7 +63,7 @@ export default function RunningChart({ user }) {
 				<div className={Styles.km_header}>
 					<h4>{average}km en moyenne</h4>
 					<button onClick={() => setStartDate(prev => prev.subtract(4, "week"))}>&lt;</button>
-					<span>{startDate.format("DD MMM")} - {startDate.add(4, "week").format("DD MMM")}</span>
+					<span>{startDate.format("DD MMM")} - {endDate.format("DD MMM")}</span>
 					<button onClick={() => setStartDate(prev => prev.add(4, "week"))}>&gt;</button>
 				</div>
 				<p className={Styles.km_title}>Total des kilomètres des 4 dernières semaines</p>

@@ -3,28 +3,54 @@ import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import Styles from "@/app/dashboard/dashboard.module.css";
 
 
-function datesWeek(user) {
-	const today=new Date();
-	const { monday, sunday } = currentWeek(today);
-	return user.runningData.filter(run=>{
-		const runDate=new Date(run.date);
-		return runDate>=monday&&runDate<=sunday;
-	})
+
+// function datesWeek(user) {
+// 	const today=new Date();
+// 	const { monday, sunday } = currentWeek(today);
+// 	return user.runningData.filter(run=>{
+// 		const runDate=new Date(run.date);
+// 		return runDate>=monday&&runDate<=sunday;
+// 	})
+// }
+
+function datesWeek(runningData, start, end) {
+	const monday = new Date(start);
+	const sunday = new Date(end);
+
+	return runningData.filter(run => {
+	const runDate = new Date(run.date);
+	return runDate >= monday && runDate <= sunday;
+	});
 }
 
-function calculObjectifs(user){
-	const runsThisWeek=datesWeek(user);
+
+function calculObjectifs(runningData, start, end, weeklyGoal) {
+	const runsThisWeek = datesWeek(runningData, start, end);
 	const objectifAccomplished = runsThisWeek.length;
-	const objectifNotAccomplished = user.weeklyGoal-objectifAccomplished;
+	const objectifNotAccomplished =weeklyGoal-objectifAccomplished;
 	return [
 		{ name: "réalisées", value: objectifAccomplished },
 		{ name: "restantes", value: objectifNotAccomplished>0 ? objectifNotAccomplished:0},
 	];
 }
 
+function labelAccord(value, name) {
+	if (name === "réalisées") {
+		return value <= 1 ? `${value} réalisée` : `${value} réalisées`;
+	}
+	if (name === "restantes") {
+		return value <= 1 ? `${value} restante` : `${value} restantes`;
+	}
+		return `${value} ${name}`;
+}
 
-export default function ObjectifsChart({ user }) {
-	const objectifData=calculObjectifs(user);
+export default function ObjectifsChart({ runningData, weeklyGoal, weekRange }) {
+	// const { startEndWeek } = useMockData();
+	// const { start, end } = startEndWeek.range;
+	// const activities = startEndWeek.activities;
+	const{start,end}=weekRange;
+	
+	const objectifData=calculObjectifs(runningData, start,end, weeklyGoal);
 	const colors = ["#0b23f4", "#b6bdfc"];
 	const objectifAccomplished=objectifData[0].value;
 	const objectifLabel= objectifAccomplished<=1 ? "objectif réalisé" : "objectifs réalisés"
@@ -46,7 +72,7 @@ export default function ObjectifsChart({ user }) {
 		fontWeight={400}
 		color="#707070"
 		>
-		{objectifData[index].value} {objectifData[index].name} 
+		{labelAccord(objectifData[index].value, objectifData[index].name)} 
 		</text>
 	);
 	};
@@ -55,7 +81,7 @@ export default function ObjectifsChart({ user }) {
     <section>
 		<div className={Styles.chart_objectif}>
 			<div className={Styles.objectif_title}>
-				<h3>{objectifAccomplished}<span className={Styles.objectif_subtitle}> {objectifLabel} sur {user.weeklyGoal}</span></h3>
+				<h3>{objectifAccomplished}<span className={Styles.objectif_subtitle}> {objectifLabel} sur {weeklyGoal}</span></h3>
 			</div>
 			<p>Courses hebdomadaire réalisées</p>
 

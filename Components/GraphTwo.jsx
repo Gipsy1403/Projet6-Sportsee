@@ -7,7 +7,7 @@ import {ResponsiveContainer,BarChart,Bar,Line,LineChart,XAxis,YAxis,CartesianGri
 import { useState } from "react";
 import "dayjs/locale/fr";
 import Styles from "@/app/dashboard/dashboard.module.css";
-import { useMockData } from "./GlobalContextMOCK";
+// import { useMockData } from "./GlobalContextMOCK";
 
 dayjs.extend(isoWeek);
 dayjs.extend(weekday);
@@ -21,8 +21,8 @@ function calculateWeekAverage(weekData){
 }
 
 function getWeekHeartRateData(runningData, selectedDate){
-	const weekStart = dayjs(selectedDate).isoWeekday(1); // lundi
-	const weekEnd = dayjs(selectedDate).isoWeekday(7);   // dimanche
+	const weekStart = dayjs(selectedDate).isoWeekday(1).startOf("day"); // lundi
+	const weekEnd = dayjs(selectedDate).isoWeekday(7).endOf("day");   // dimanche
 
 	// créer les 7 jours
 	const weekDays = [];
@@ -47,11 +47,11 @@ function getWeekHeartRateData(runningData, selectedDate){
 	return weekDays;
 };
 
-export default function WeekHeartRateChart({ user }){
-	const { activities } = useMockData();
+export default function WeekHeartRateChart({ runningData }){
+	// const { StartEndWeek } = useMockData();
 	const [selectedDate, setSelectedDate] = useState(new Date());
  
-	const weekData = getWeekHeartRateData(activities, selectedDate);
+	const weekData = getWeekHeartRateData(runningData, selectedDate);
 	// console.log("weekdata:", weekData)
 	const weekStart = dayjs(selectedDate).isoWeekday(1); 
 	const weekEnd = dayjs(selectedDate).isoWeekday(7); 

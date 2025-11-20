@@ -1,5 +1,5 @@
 "use client"
-import { dataMocks } from "@/src/mocks/users";
+
 import { useState } from "react";
 import Styles from "@/app/login/login.module.css"
 // import { useUser } from "./GlobalContext";

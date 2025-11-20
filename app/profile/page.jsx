@@ -4,6 +4,8 @@ import Styles from "./profile.module.css";
 import Image from "next/image";
 import DateFormated from "@/Components/DateFormated";
 import { useState, useEffect } from "react";
+import userActivity from"@/src/mocks/userActivity.json"
+import userInfo from"@/src/mocks/userInfo.json"
 // import { useUser } from "@/Components/GlobalContext";
 
 function ConvertMinutesToHours({statistics}){
@@ -19,7 +21,32 @@ function ConvertMinutesToHours({statistics}){
 
 
 export default function PageProfile() {
-	// const{user, loading,error}=useUser();
+		const [profile, setProfile] = useState(null);
+		const [statistics, setStatistics] = useState(null);
+		const [message, setMessage] = useState("");
+	
+	  useEffect(() => {
+	    const loadMockUserInfo = async () => {
+		 try {
+		   // simule un délai réseau
+		   await new Promise(resolve => setTimeout(resolve, 500));
+	
+		   // on récupère les données du mock
+		   setProfile(userInfo.profile);
+		   setStatistics(userInfo.statistics);
+		 } catch (err) {
+		   console.error(err);
+		   setMessage("Erreur réseau");
+		 }
+	    };
+	
+	    loadMockUserInfo();
+	  }, []);
+	
+	  if (!profile) {
+	    return <p>Chargement du profil...</p>;
+	  }
+
 	// const [profile, setProfile] = useState(null);
 	// const [statistics, setStatistics] = useState(null);
 
@@ -67,8 +94,7 @@ export default function PageProfile() {
 		female :"Féminin",
 		other :"Autre"
 	};
-	// if (loading) return <p>Chargement...</p>;
-  	// if (error) return <p>{error}</p>;
+
 console.log("Gender reçu :", profile.gender);
 
   	return (

@@ -65,7 +65,8 @@ function weekDistance(data, range) {
   return weekSessions.reduce((sum, session) => sum + session.distance, 0);
 }
 
-function formatDateFR(date) {
+function formatDateFR(dateString) {
+	const date=new Date(dateString);
 	const day = String(date.getDate()).padStart(2, "0");
 	const month = String(date.getMonth() + 1).padStart(2, "0"); // +1 car janvier = 0
 	const year = date.getFullYear();
@@ -81,7 +82,14 @@ function formatDateFR(date) {
 // }
 
 export default function PageDashboard() {
-	const{range, activities}=useMockData();
+	
+	const{startEndWeek}=useMockData();
+	const activities=startEndWeek.activities;
+
+	// console.log("activities dans Dashboard :", startEndWeek);
+	const range=startEndWeek.range;
+	console.log("activities dans Dashboard 1 :", activities);
+	
 	// const{range, activities}=useUser();
 	const[search,setSearch]=useState("");
 
@@ -106,6 +114,8 @@ export default function PageDashboard() {
 
     loadMockUserInfo();
   }, []);
+
+
 
   if (!profile) {
     return <p>Chargement du profil...</p>;
@@ -173,20 +183,23 @@ export default function PageDashboard() {
 					alt="icone qu'une main tenant un fanion de victoire"
 					width={34}
 					height={34}/>
-					<h4>KM km</h4>
+					<h4>{statistics.totalDistance} km</h4>
 				</div>
 			</div>
 		</div>
 		<h4 className={Styles.dashboard_performance_title}>Vos dernières performances</h4>
-		<div className={Styles.dashboard_performance_month}>
-			<RunningChart user={statistics.runningData}/>
-			<WeekHeartRateChart user={statistics.runningData}/>
-		</div>
+		{activities && activities.length>0? (
+			<div className={Styles.dashboard_performance_month}>
+				<RunningChart runningData={activities}/>
+				<WeekHeartRateChart runningData={activities}/>
+			</div>
+		):"le graphique ne s'affiche pas"
+		}
 		<div>
 			<h4>Cette semaine</h4>
-			{/* <h5 className={Styles.dashboard_performance_week_date}>Du {weekPeriod().start} au {weekPeriod().end}</h5> */}
+			<h5 className={Styles.dashboard_performance_week_date}>Du {formatDateFR(range.start)} au {formatDateFR(range.end)}</h5>
 			<div className={Styles.dashboard_performance_week}>
-				{/* <ObjectifsChart user={user} /> */}
+				<ObjectifsChart  runningData={activities} weeklyGoal={profile.weeklyGoal} weekRange={range}/>
 				<div className={Styles.dashboard_performance_activities}>
 					<div className={Styles.dashboard_performance_activity}>
 						{/*// * NOTE:  code mis ainsi car react n'accepte pas l'apostrophe dans ce p */}

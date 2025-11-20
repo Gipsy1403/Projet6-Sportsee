@@ -1,5 +1,6 @@
 {
     "profile": {
+	"weeklyGoal": 6,
         "firstName": "Sophie",
         "lastName": "Martin",
         "createdAt": "2025-01-01",
