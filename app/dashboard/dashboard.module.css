@@ -157,3 +157,25 @@
 	color: var(--bpmRed);
 }
 
+/*  container pour le planning d'entrainement */
+.dashboardAI_container{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
+	background-color: white;
+	border-radius: 10px;
+	margin: 2rem 0;
+	padding: 2rem 0;
+	height: 386px ;
+}
+.dashboardAI_container span{
+	display: block;
+	text-align: center;
+}
+.dashboardAI_container h5{
+	color: white;
+	background-color: var(--primary);
+	padding: 16px 40px;
+	border-radius: 10px;
+}

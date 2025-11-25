@@ -11,11 +11,6 @@ dayjs.extend(isSameOrBefore);
 
 // Fonction pour grouper les courses par semaine
 function groupByWeek(runningData, startDate) {
-	console.log("groupByWeek called with startDate:", startDate.format("YYYY-MM-DD"));
-	// if (!runningData) {
-	// 	console.log("No runningData provided");
-	// 	return [];}
-
 	const start = dayjs(startDate);
 	const weeks = [0, 1, 2, 3].map(i => {
 	const weekStart = start.add(i*7,"day");

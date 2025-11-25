@@ -4,8 +4,7 @@ import Header from "@/Components/Header";
 import Footer from "@/Components/Footer";
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
-// ! IMPORTANT: le chemin du global provider est celui du mocks à modifier lors de la mise en oeuvre avec l'API
-import { MockDataProvider } from "@/Components/GlobalContextMOCK";
+import { GlobalProvider } from "@/Components/GlobalContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,13 +22,11 @@ export default function RootLayout({ children }) {
   return (
 	<html lang="fr">
 		<body suppressHydrationWarning className={`${inter.variable}`}>
-		<MockDataProvider>
-		{/* <GlobalProvider> */}
-			<Header />
+		<GlobalProvider>
+			{/* <Header /> */}
 			{children}
-			<Footer />
-		{/* <GlobalProvider> */}
-		</MockDataProvider>
+			{/* <Footer /> */}
+		</GlobalProvider>
 		</body>
 	</html>
   );

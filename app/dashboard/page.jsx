@@ -6,9 +6,12 @@ import RunningChart from "@/Components/GraphOne";
 import WeekHeartRateChart from "@/Components/GraphTwo";
 import DateFormated from "@/Components/DateFormated";
 import ObjectifsChart from "@/Components/GraphThree";
-import { useMockData } from "@/Components/GlobalContextMOCK";
-import userActivity from"@/src/mocks/userActivity.json"
-import userInfo from"@/src/mocks/userInfo.json"
+import { useUser } from "@/Components/GlobalContext";
+import Link from "next/link";
+import Header from "@/Components/Header";
+import Footer from "@/Components/Footer";
+// import userActivity from"@/src/mocks/userActivity.json"
+// import userInfo from"@/src/mocks/userInfo.json"
 
 
 // export function currentWeek(){
@@ -83,136 +86,155 @@ function formatDateFR(dateString) {
 
 export default function PageDashboard() {
 	
-	const{startEndWeek}=useMockData();
+	const{startEndWeek}=useUser();
 	const activities=startEndWeek.activities;
-
-	// console.log("activities dans Dashboard :", startEndWeek);
 	const range=startEndWeek.range;
+
 	console.log("activities dans Dashboard 1 :", activities);
 	
-	// const{range, activities}=useUser();
+
 	const[search,setSearch]=useState("");
 
 	const [profile, setProfile] = useState(null);
 	const [statistics, setStatistics] = useState(null);
 	const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    const loadMockUserInfo = async () => {
-      try {
-        // simule un délai réseau
-        await new Promise(resolve => setTimeout(resolve, 500));
+//   useEffect(() => {
+//     const loadMockUserInfo = async () => {
+//       try {
+//         // simule un délai réseau
+//         await new Promise(resolve => setTimeout(resolve, 500));
 
-        // on récupère les données du mock
-        setProfile(userInfo.profile);
-        setStatistics(userInfo.statistics);
-      } catch (err) {
-        console.error(err);
-        setMessage("Erreur réseau");
-      }
-    };
+//         // on récupère les données du mock
+//         setProfile(userInfo.profile);
+//         setStatistics(userInfo.statistics);
+//       } catch (err) {
+//         console.error(err);
+//         setMessage("Erreur réseau");
+//       }
+//     };
 
-    loadMockUserInfo();
-  }, []);
+//     loadMockUserInfo();
+//   }, []);
 
 
 
-  if (!profile) {
-    return <p>Chargement du profil...</p>;
-  }
+//   if (!profile) {
+//     return <p>Chargement du profil...</p>;
+//   }
 	
-	//   useEffect(() => {
-	//     const handleDashboard = async () => {
-	// 	 try {
-	// 	   const res = await fetch("http://localhost:8000/api/user-info", {
-	// 		method: "GET",
-	// 		credentials: "include",
-	// 	   });
+	  useEffect(() => {
+	    const handleDashboard = async () => {
+		 try {
+		   const res = await fetch("http://localhost:8000/api/user-info", {
+			method: "GET",
+			credentials: "include",
+		   });
 	
-	// 	   const data = await res.json();
+		   const data = await res.json();
 	
-	// 	   if (res.ok) {
-	// 		setProfile(data.profile);
-	// 		setStatistics(data.statistics);
+		   if (res.ok) {
+			setProfile(data.profile);
+			setStatistics(data.statistics);
+
+			console.log("Données reçues :", data.statistics);
+			console.log("Profil :", data);
+			
+		   } else {
+			setMessage(data.message || "Erreur lors de la récupération du profil");
+		   }
+		 } catch (err) {
+		   console.error(err);
+		   setMessage("Erreur réseau");
+		 }
+	    };
 	
-	// 		console.log("Profil :", data);
-	// 	   } else {
-	// 		setMessage(data.message || "Erreur lors de la récupération du profil");
-	// 	   }
-	// 	 } catch (err) {
-	// 	   console.error(err);
-	// 	   setMessage("Erreur réseau");
-	// 	 }
-	//     };
+	    handleDashboard();
+	  }, []);
+	  
 	
-	//     handleDashboard();
-	//   }, []);
-	
-	//  if (!profile) {
-	//   return <p>Chargement du profil...</p>;
-	// }
+	 if (!profile) {
+	  return <p>Chargement du profil...</p>;
+	}
 
   return (
-	<section >
-		<form className={Styles.form_coachAI}>
-			<input
-			type="text"
-			value={search}
-			placeholder="Posez vos questions sur votre programme, vos performances ou vos objectifs."
-			onChange={(e)=>setSearch(e.target.value)}
-				/>
+	<>
+		<Header/>
+		<section >
+			<form className={Styles.form_coachAI}>
+				<input
+				type="text"
+				value={search}
+				placeholder="Posez vos questions sur votre programme, vos performances ou vos objectifs."
+				onChange={(e)=>setSearch(e.target.value)}
+					/>
 				<button>Lancer une conversation</button>
-		</form>
-		<div className={Styles.dashboard_profile_container}>
-			<div className={Styles.dashboard_profile}>
-				<Image
-				src={"/assets/images/Photo profil.png"}
-				alt="Photo de profil"
-				width={104}
-				height={117}/>
-				<div>
-					<h4>{profile.firstName} {profile.lastName}</h4>
-					<p>Membre depuis le <DateFormated date={profile.createdAt}/></p>
-				</div>
-			</div>
-			<div className={Styles.dashboard_distance}>
-				<p>Distance totale parcourue</p>
-				<div className={Styles.dashboard_distance_nbre}>
+			</form>
+			<div className={Styles.dashboard_profile_container}>
+				<div className={Styles.dashboard_profile}>
 					<Image
-					src={"/assets/images/OUTLINE.png"}
-					alt="icone qu'une main tenant un fanion de victoire"
-					width={34}
-					height={34}/>
-					<h4>{statistics.totalDistance} km</h4>
-				</div>
-			</div>
-		</div>
-		<h4 className={Styles.dashboard_performance_title}>Vos dernières performances</h4>
-		{activities && activities.length>0? (
-			<div className={Styles.dashboard_performance_month}>
-				<RunningChart runningData={activities}/>
-				<WeekHeartRateChart runningData={activities}/>
-			</div>
-		):"le graphique ne s'affiche pas"
-		}
-		<div>
-			<h4>Cette semaine</h4>
-			<h5 className={Styles.dashboard_performance_week_date}>Du {formatDateFR(range.start)} au {formatDateFR(range.end)}</h5>
-			<div className={Styles.dashboard_performance_week}>
-				<ObjectifsChart  runningData={activities} weeklyGoal={profile.weeklyGoal} weekRange={range}/>
-				<div className={Styles.dashboard_performance_activities}>
-					<div className={Styles.dashboard_performance_activity}>
-						{/*// * NOTE:  code mis ainsi car react n'accepte pas l'apostrophe dans ce p */}
-						<p>{"Durée d'activité"}</p>
-						<h4 className={Styles.dashboard_performance_duration}>{weekDuration(activities, range)} <span>minutes</span></h4>
+					src={"/assets/images/Photo profil.png"}
+					alt="Photo de profil"
+					width={104}
+					height={117}/>
+					<div>
+						<h4>{profile.firstName} {profile.lastName}</h4>
+						<p>Membre depuis le <DateFormated date={profile.createdAt}/></p>
 					</div>
-					<div className={Styles.dashboard_performance_activity}>
-						<p>Distance</p>
-						<h4 className={Styles.dashboard_performance_distance}>{weekDistance(activities, range)} <span>kilomètres</span></h4>
+				</div>
+				<div className={Styles.dashboard_distance}>
+					<p>Distance totale parcourue</p>
+					<div className={Styles.dashboard_distance_nbre}>
+						<Image
+						src={"/assets/images/OUTLINE.png"}
+						alt="icone qu'une main tenant un fanion de victoire"
+						width={34}
+						height={34}/>
+						<h4>{statistics.totalDistance} km</h4>
 					</div>
 				</div>
 			</div>
-		</div>
-	</section>
+			<h4 className={Styles.dashboard_performance_title}>Vos dernières performances</h4>
+			{activities && activities.length>0? (
+				<div className={Styles.dashboard_performance_month}>
+					<RunningChart runningData={activities}/>
+					<WeekHeartRateChart runningData={activities}/>
+				</div>
+			):"le graphique ne s'affiche pas"
+			}
+			<div>
+				<h4>Cette semaine</h4>
+				<h5 className={Styles.dashboard_performance_week_date}>Du {formatDateFR(range.start)} au {formatDateFR(range.end)}</h5>
+				<div className={Styles.dashboard_performance_week}>
+					<ObjectifsChart  runningData={activities} weeklyGoal={profile.weeklyGoal} weekRange={range}/>
+					<div className={Styles.dashboard_performance_activities}>
+						<div className={Styles.dashboard_performance_activity}>
+							{/*// * NOTE:  code mis ainsi car react n'accepte pas l'apostrophe dans ce p */}
+							<p>{"Durée d'activité"}</p>
+							<h4 className={Styles.dashboard_performance_duration}>{weekDuration(activities, range)} <span>minutes</span></h4>
+						</div>
+						<div className={Styles.dashboard_performance_activity}>
+							<p>Distance</p>
+							<h4 className={Styles.dashboard_performance_distance}>{weekDistance(activities, range)} <span>kilomètres</span></h4>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div className={Styles.dashboardAI_container}>
+				<Image
+					src={"/assets/images/Icons.png"}
+					alt="icone d'un calendrier"
+					width={66}
+					height={66}
+				/>
+				<h3>Créez votre planning d'entraînements <span>intelligent</span></h3>
+				<p>Notre IA vous aide à bâtir un planning 100 % personnalisé selon vos objectifs, votre <span>niveau et votre emploi du temps.</span></p>
+				<Link href="/chat">
+					<h5>Commencer</h5>
+				</Link>
+			</div>
+		</section>
+		<Footer/>
+	</>
   );
 }
