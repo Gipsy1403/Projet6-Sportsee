@@ -24,27 +24,69 @@
 	max-height: 300px;
 	overflow-y: auto;
 	height: 100%;
+	/* margin: 0 13rem; */
+	max-width: 800px;
+	width: 100%;
+	margin: auto;
 }
-.messages_container{
-	display: flex;align-items: flex-start;
+.messages_row {
+	display: flex;
+	align-items: flex-end;
 	gap: 10px;
 	margin-bottom: 15px;
 }
+/* .messages_container{
+	display: flex;align-items: flex-start;
+	gap: 10px;
+	margin-bottom: 15px;
+} */
 .avatar{
 	border-radius: 50%;
 	object-fit: cover;
 }
-.content_message{
+.bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  max-width: 60%;
+}
+
+/* IA à gauche */
+.ai_row {
+  justify-content: flex-start;
+}
+.ai_bubble {
+  background-color: #e7e7e7;
+  border-radius: 20px 20px 20px 0;
+}
+
+/* Utilisateur à droite */
+.user_row {
+  justify-content: flex-end;
+}
+.user_bubble {
+  background-color: var(--bpmPink);
+  filter: saturate(50%);
+  border-radius: 20px 20px 0 20px;
+}
+.error_bubble {
+  background-color: var(--bpmRed);
+  color: white;
+  border-radius: 10px;
+  padding: 8px;
+}
+/* .content_message{
 	padding: 8px 12px;
 	border-radius: 12px;
-	max-width: 70%;
+	max-width: 50%;
 }
 .user_message{
-	background-color: #fcc1b6 50%;
+	background-color: var(--bpmPink);
+	filter: saturate(50%);
 	justify-content: flex-end;
 	text-align: right;
 	border-radius: 20px 20px 0 20px;
 	padding: 14px 20px;
+	width: 40%;
 }
 .ai_message{
 	padding: 14px 20px;
@@ -52,7 +94,7 @@
 	justify-content: flex-start;
 	text-align: left;
 	border-radius: 20px 20px 20px 0;
-}
+} */
 /* ****** Encart pour les messages user******* */
 .textarea_message{
 	display: flex;
@@ -95,4 +137,36 @@
 	padding: 24px 16px 40px 16px;
 	margin: 1rem 0;
 	font-size: 12px;
+	cursor: pointer;
+}
+
+/* *********Loader de chargement********** */
+.loader_dots {
+	display: flex;
+	gap: 6px;
+	align-items: center;
+	padding: 6px 10px;
+	background: var(--bpmPink);
+	border-radius: 12px;
+}
+
+.loader_dots span {
+	width: 8px;
+	height: 8px;
+	/* background: var(--primary-color); */
+	border-radius: 50%;
+	display: inline-block;
+	animation: pulse 0.8s infinite ease-in-out;
+}
+
+/* décalage d’animation pour chaque point */
+.loader_dots span:nth-child(1) { animation-delay: 0s; }
+.loader_dots span:nth-child(2) { animation-delay: 0.15s; }
+.loader_dots span:nth-child(3) { animation-delay: 0.3s; }
+.loader_dots span:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes pulse {
+	0% { transform: scale(0.5); opacity: 0.3; }
+	50% { transform: scale(1); opacity: 1; }
+	100% { transform: scale(0.5); opacity: 0.3; }
 }

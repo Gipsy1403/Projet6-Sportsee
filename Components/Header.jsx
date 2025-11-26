@@ -26,7 +26,7 @@ export default function Header(){
 			<div className="bar_navigation">
 				<ul>
 					<li><Link href="/dashboard">Dashboard</Link></li>
-					<li>Coach AI</li>
+					<li><Link href={"/chat"}>Coach AI</Link></li>
 					<li><Link href="/profile">Mon profil</Link></li>
 					<li onClick={handleLogout}>Se déconnecter</li>
 				</ul>

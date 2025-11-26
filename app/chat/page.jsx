@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Styles from "./chat.module.css"
 import { useRouter } from "next/navigation";
+import ChatMessages from "@/Components/ChatMessages";
 
 
 export default function ChatPage() {
@@ -10,52 +11,86 @@ export default function ChatPage() {
 	const [messages, setMessages] = useState([]);
 	// Texte écrit par l'utilisateur
 	const [textarea, setTextarea] = useState("");
+	// etat de chargement pour l'IA
+	const[loading,setLoading]=useState(false);
+	// gestion des erreurs côté client
+	const[error,setError]=useState(null);
+	// gère l'état dès que la conversation est lancée pour faire disparaitre le h4
+	const [conversationsStart, setConversationsStart]=useState(false);
+
 	// initialise le router pour revenir au dashboard après avoir cliqué sur Fermer
 	const router=useRouter();
-	// Fonction appelée quand on clique sur "Envoyer"
-	const handleSend = async () => {
-		if (!textarea.trim()) return;
 
-		// ajoute le message de l'utilisateur dans la liste
+	// limitation longueur message user
+	const MAX_LENGTH=500;
+
+	// Fonction appelée quand on clique sur "Envoyer"
+	const handleSend = async (e) => {
+		e?.preventDefault();
+		if (!textarea.trim()) return;
+		if(!conversationsStart)setConversationsStart(true);
+
+		if (textarea.length > MAX_LENGTH) {
+			setMessages((prev) => [
+				...prev,
+				{
+				role: "error",
+				content: `Message trop long. Maximum autorisé : ${MAX_LENGTH} caractères.`,
+				},
+			]);
+			return;
+		}
+
 		const userMessage = { role: "user", content: textarea };
 		setMessages((prev) => [...prev, userMessage]);
+		setTextarea("");
+		setLoading(true);
+		// réinitialise l'erreur avant une nouvelle requête
+		setError(null); 
 
-		// appelle la route API /api/mistral
-		const res = await fetch("/api/mistral", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ message: textarea }),
-		});
+		try {
+			const res = await fetch("/api/chat", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ message: textarea }),
+			});
+			if (!res.ok) {
+				throw new Error("Réponse serveur invalide");
+			}
 
-		const data = await res.json();
+			const data = await res.json();
+			if (!data.reply) {
+				throw new Error("Réponse AI manquante");
+			}
 
-		// ajoute la réponse de l'IA à la liste
-		const botMessage = { role: "assistant", content: data.reply };
-		setMessages((prev) => [...prev, botMessage]);
-		// vide le champ texte
-		setTextarea(""); 
+			const botMessage = { role: "assistant", content: data.reply };
+			setMessages((prev) => [...prev, botMessage]);
+
+		} catch (err) {
+			// Message d'erreur affiché dans la zone de messages
+			setMessages((prev) => [...prev,{ role: "error", content: "Une erreur est survenue. Merci de réessayer." }
+			]);
+			setError(err.message);
+		}
+		setLoading(false);
+	};
+
+	const handleQuestionClick=(question)=>{
+		setTextarea(question);
+		if(!conversationsStart)setConversationsStart(true);
+		setTimeout(()=>handleSend(),50);
 	};
 
 	return (
 		<section className={Styles.container_mistral}>
 			<p onClick={()=>router.push("/dashboard")} className={Styles.closed_windows}>Fermer X</p>
-			<h4 className={Styles.title}>Posez vos questions sur votre programme, <span>vos performances ou vos objectifs</span></h4>
+			{!conversationsStart && (
+				<h4 className={Styles.title}>Posez vos questions sur votre programme, <span>vos performances ou vos objectifs</span></h4>
+			)}
 
 			{/* Zone d'affichage des messages */}
-			<div className={Styles.zone_messages}>
-				{messages.map((msg, i) => (
-					<div key={i}  className={`${Styles.messages_container} ${msg.role==="user"?Styles.user_message: Styles.ai_message}`}>
-					<Image
-						src={msg.role==="user"?"/assets/images/Photo profil.png": "/assets/images/AI agent.png"}
-						alt={msg.role==="user"?"Avatar de l'utilisateur": "Coach IA"}
-						width={32}
-						height={32}
-						className={Styles.avatar}
-					/>
-					<p className={Styles.content_message}>{msg.content}</p>
-					</div>
-				))}
-			</div>
+			<ChatMessages messages={messages} loading={loading} />
+
 			{/* Champ de saisie */}
 			<form onSubmit={handleSend} className={Styles.textarea_message}>
 				{/* <Image
@@ -66,7 +101,11 @@ export default function ChatPage() {
 				/> */}
 				<textarea
 					value={textarea}
-					onChange={(e) => setTextarea(e.target.value)}
+					onChange={(e) => {
+						if(e.target.value.length<=MAX_LENGTH){
+							setTextarea(e.target.value);
+						}
+					}}
 					placeholder="Comment puis-je vous aider ?"
 				/>
 				<button type="submit" className={Styles.btn_send}>
@@ -79,9 +118,11 @@ export default function ChatPage() {
 				</button>
 			</form>
 			<div className={Styles.btn_questions}>
-				<p>Comment améliorer mon endurance ?</p>
-				<p>Que signifie mon score de récupération ?</p>
-				<p>Peux tu m'expliquer mon dernier graphique ?</p>
+				{["Comment améliorer mon endurance ?",
+				"Que signifie mon score de récupération ?",
+				"Peux tu m'expliquer mon dernier graphique ?"].map((q,i)=>(
+					<p key={i} onClick={()=>handleQuestionClick(q)}>{q}</p>
+				))}
 			</div>
 		</section>
 	);

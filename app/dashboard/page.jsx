@@ -229,9 +229,9 @@ export default function PageDashboard() {
 				/>
 				<h3>Créez votre planning d'entraînements <span>intelligent</span></h3>
 				<p>Notre IA vous aide à bâtir un planning 100 % personnalisé selon vos objectifs, votre <span>niveau et votre emploi du temps.</span></p>
-				<Link href="/chat">
-					<h5>Commencer</h5>
-				</Link>
+
+				<h5>Commencer</h5>
+
 			</div>
 		</section>
 		<Footer/>
