@@ -2,6 +2,8 @@
 import Image from "next/image";
 import Styles from "@/app/chat/chat.module.css";
 import { useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+
 
 export default function ChatMessages({ messages,loading }) {
 	const bottomRef = useRef(null);
@@ -25,17 +27,26 @@ export default function ChatMessages({ messages,loading }) {
 						className={Styles.avatar}
 					/>
 				)}
-
-				<p className={`${Styles.bubble} ${
-					msg.role === "user" 
-						? Styles.user_bubble 
-						: msg.role === "assistant"
-						? Styles.ai_bubble
-						:Styles.error_bubble
-				}`}>
-				{msg.content}
-				</p>
-
+				{msg.role === "assistant" ? (
+					<div className={`${Styles.bubble} ${Styles.ai_bubble}`}>
+						<ReactMarkdown>{msg.content}</ReactMarkdown>
+					</div>
+				) : (
+				// <p className={`${Styles.bubble} ${
+				// 	msg.role === "user" 
+				// 		? Styles.user_bubble 
+				// 		: msg.role === "assistant"
+				// 		? Styles.ai_bubble
+				// 		:Styles.error_bubble
+				// }`}>
+					<p className={`${Styles.bubble} ${
+						msg.role === "user"
+						? Styles.user_bubble
+						: Styles.error_bubble
+					}`}>
+					{msg.content}
+					</p>
+				)}
 				{msg.role === "user" && (
 					<Image
 						src="/assets/images/Photo profil.png"

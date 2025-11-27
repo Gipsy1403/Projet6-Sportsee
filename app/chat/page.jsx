@@ -52,6 +52,7 @@ export default function ChatPage() {
 			const res = await fetch("/api/chat", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
+				credentials:"include",
 				body: JSON.stringify({ message: textarea }),
 			});
 			if (!res.ok) {
