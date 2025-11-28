@@ -4,6 +4,7 @@ import Image from "next/image";
 import Styles from "./chat.module.css"
 import { useRouter } from "next/navigation";
 import ChatMessages from "@/Components/ChatMessages";
+import EffectsPages from "@/Components/EffectPage";
 
 
 export default function ChatPage() {
@@ -83,48 +84,60 @@ export default function ChatPage() {
 	};
 
 	return (
-		<section className={Styles.container_mistral}>
-			<p onClick={()=>router.push("/dashboard")} className={Styles.closed_windows}>Fermer X</p>
-			{!conversationsStart && (
-				<h4 className={Styles.title}>Posez vos questions sur votre programme, <span>vos performances ou vos objectifs</span></h4>
-			)}
+		<>
+		<EffectsPages>
+			<section className={Styles.container_mistral}>
+				<p onClick={()=>router.push("/dashboard")} className={Styles.closed_windows}>Fermer X</p>
+				{!conversationsStart && (
+					<h4 className={Styles.title}>Posez vos questions sur votre programme, <span>vos performances ou vos objectifs</span></h4>
+				)}
 
-			{/* Zone d'affichage des messages */}
-			<ChatMessages messages={messages} loading={loading} />
+				{/* Zone d'affichage des messages */}
+				<ChatMessages messages={messages} loading={loading} />
 
-			{/* Champ de saisie */}
-			<form onSubmit={handleSend} className={Styles.textarea_message}>
-				{/* <Image
-					src={"/assets/images/Icone AI (1).png"}
-					alt="bouton envoyer"
-					width={20}
-					height={20}
-				/> */}
-				<textarea
-					value={textarea}
-					onChange={(e) => {
-						if(e.target.value.length<=MAX_LENGTH){
-							setTextarea(e.target.value);
-						}
-					}}
-					placeholder="Comment puis-je vous aider ?"
-				/>
-				<button type="submit" className={Styles.btn_send}>
-					<Image
-						src={"/assets/images/Button.png"}
+				{/* Champ de saisie */}
+				<form onSubmit={handleSend} className={Styles.textarea_message}>
+					{/* <Image
+						src={"/assets/images/Icone AI (1).png"}
 						alt="bouton envoyer"
-						width={48}
-						height={48}				
+						width={20}
+						height={20}
+					/> */}
+					<textarea
+						value={textarea}
+						onChange={(e) => {
+							if(e.target.value.length<=MAX_LENGTH){
+								setTextarea(e.target.value);
+							}
+						}}
+						placeholder="Comment puis-je vous aider ?"
+						onKeyDown={(e) => {
+						// si j'appuie sur Entrée
+							if (e.key === "Enter" && !e.shiftKey) {
+								// empêche le retour à la ligne
+								e.preventDefault(); 
+								handleSend();
+							}
+						}}
 					/>
-				</button>
-			</form>
-			<div className={Styles.btn_questions}>
-				{["Comment améliorer mon endurance ?",
-				"Que signifie mon score de récupération ?",
-				"Peux tu m'expliquer mon dernier graphique ?"].map((q,i)=>(
-					<p key={i} onClick={()=>handleQuestionClick(q)}>{q}</p>
-				))}
-			</div>
-		</section>
+					<button type="submit" className={Styles.btn_send}>
+						<Image
+							src={"/assets/images/Button.png"}
+							alt="bouton envoyer"
+							width={48}
+							height={48}				
+						/>
+					</button>
+				</form>
+				<div className={Styles.btn_questions}>
+					{["Comment améliorer mon endurance ?",
+					"Que signifie mon score de récupération ?",
+					"Peux tu m'expliquer mon dernier graphique ?"].map((q,i)=>(
+						<p key={i} onClick={()=>handleQuestionClick(q)}>{q}</p>
+					))}
+				</div>
+			</section>
+		</EffectsPages>
+		</>
 	);
 }

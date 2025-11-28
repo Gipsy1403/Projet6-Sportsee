@@ -5,6 +5,7 @@ import Image from "next/image";
 import DateFormated from "@/Components/DateFormated";
 import { useState, useEffect } from "react";
 import Footer from "@/Components/Footer";
+import EffectsPages from "@/Components/EffectPage";
 // import userActivity from"@/src/mocks/userActivity.json"
 // import userInfo from"@/src/mocks/userInfo.json"
 // import { useUser } from "@/Components/GlobalContext";
@@ -22,32 +23,6 @@ function ConvertMinutesToHours({statistics}){
 
 
 export default function PageProfile() {
-	// 	const [profile, setProfile] = useState(null);
-	// 	const [statistics, setStatistics] = useState(null);
-	// 	const [message, setMessage] = useState("");
-	
-	//   useEffect(() => {
-	//     const loadMockUserInfo = async () => {
-	// 	 try {
-	// 	   // simule un délai réseau
-	// 	   await new Promise(resolve => setTimeout(resolve, 500));
-	
-	// 	   // on récupère les données du mock
-	// 	   setProfile(userInfo.profile);
-	// 	   setStatistics(userInfo.statistics);
-	// 	 } catch (err) {
-	// 	   console.error(err);
-	// 	   setMessage("Erreur réseau");
-	// 	 }
-	//     };
-	
-	//     loadMockUserInfo();
-	//   }, []);
-	
-	//   if (!profile) {
-	//     return <p>Chargement du profil...</p>;
-	//   }
-
 	const [profile, setProfile] = useState(null);
 	const [statistics, setStatistics] = useState(null);
 
@@ -100,64 +75,65 @@ console.log("Gender reçu :", profile.gender);
 
   	return (
 		<>
-			<Header/>
-			<section className={Styles.profile_container}>
-				<div >
-					<div className={Styles.profile_photo}>
-						<Image
-						src={"/assets/images/Photo profil.png"}
-						alt="Photo de profil"
-						width={104}
-						height={117}/>
-						<div>
-							<h4>{profile.firstName} {profile.lastName}</h4>
-							<p className={Styles.profile_date_membership}>Membre depuis le <DateFormated date={profile.createdAt}/></p>
+			<EffectsPages>
+				<Header/>
+				<section className={Styles.profile_container}>
+					<div >
+						<div className={Styles.profile_photo}>
+							<Image
+							src={"/assets/images/Photo profil.png"}
+							alt="Photo de profil"
+							width={104}
+							height={117}/>
+							<div>
+								<h4>{profile.firstName} {profile.lastName}</h4>
+								<p className={Styles.profile_date_membership}>Membre depuis le <DateFormated date={profile.createdAt}/></p>
+							</div>
+						</div>
+						<div className={Styles.profile_content}>
+							<h4 className={Styles.profile_title}>Votre profil</h4>
+							<h5>Age : {profile.age}</h5>
+							<h5>Genre : {genderFR[profile.gender]}</h5>
+							<h5>Taille : {heightMeter}</h5>
+							<h5>Poids : {profile.weight} kg</h5>
 						</div>
 					</div>
-					<div className={Styles.profile_content}>
-						<h4 className={Styles.profile_title}>Votre profil</h4>
-						<h5>Age : {profile.age}</h5>
-						<h5>Genre : {genderFR[profile.gender]}</h5>
-						<h5>Taille : {heightMeter}</h5>
-						<h5>Poids : {profile.weight} kg</h5>
+					<div>
+				
+						<h4>Vos statistiques</h4>
+						<p className={Styles.profile_date_membership}>depuis le <DateFormated date={profile.createdAt}/></p>
+				
+						<div className={Styles.profile_all_stats}>
+								{statistics && (
+									<>
+							<div className={Styles.profile_one_stat}>
+								<p>Temps total couru</p>
+								<ConvertMinutesToHours statistics={statistics}/>
+							</div>
+							<div className={Styles.profile_one_stat}>
+								<p>Calories brûlées</p>
+								<h4>{statistics.totalCalories} <span>cal</span></h4>
+							</div>
+							<div className={Styles.profile_one_stat}>
+								<p>Distance totale parcourues</p>
+								<h4>{statistics.totalDistance} <span>km</span></h4>
+							</div>
+							<div className={Styles.profile_one_stat}>
+								<p>Nombre de jours de repos</p>
+								<h4>{statistics.totalRestDays} <span>jours</span></h4>
+							</div>
+							<div className={Styles.profile_one_stat}>
+								<p>Nombre de sessions</p>
+								<h4>{statistics.totalSessions} <span>sessions</span></h4>
+							</div>
+				
+									</>
+								)}
+						</div>
 					</div>
-				</div>
-				<div>
-			
-					<h4>Vos statistiques</h4>
-					<p className={Styles.profile_date_membership}>depuis le <DateFormated date={profile.createdAt}/></p>
-			
-					<div className={Styles.profile_all_stats}>
-							{statistics && (
-								<>
-						<div className={Styles.profile_one_stat}>
-							<p>Temps total couru</p>
-							<ConvertMinutesToHours statistics={statistics}/>
-							<h4>{statistics.totalDuration} <span>min</span></h4>
-						</div>
-						<div className={Styles.profile_one_stat}>
-							<p>Calories brûlées</p>
-							<h4>{statistics.totalCalories} <span>cal</span></h4>
-						</div>
-						<div className={Styles.profile_one_stat}>
-							<p>Distance totale parcourues</p>
-							<h4>{statistics.totalDistance} <span>km</span></h4>
-						</div>
-						<div className={Styles.profile_one_stat}>
-							<p>Nombre de jours de repos</p>
-							<h4>{statistics.totalRestDays} <span>jours</span></h4>
-						</div>
-						<div className={Styles.profile_one_stat}>
-							<p>Nombre de sessions</p>
-							<h4>{statistics.totalSessions} <span>sessions</span></h4>
-						</div>
-			
-								</>
-							)}
-					</div>
-				</div>
-			</section>
-			<Footer/>
+				</section>
+				<Footer/>
+			</EffectsPages>
 		</>
 	);
 }

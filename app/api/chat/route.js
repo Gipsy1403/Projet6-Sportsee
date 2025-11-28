@@ -49,22 +49,14 @@ export async function POST(req) {
 		- Objectif course hebdomadaire : ${user.weeklyGoal}`;
 
 	// * NOTE: RECUPERE LES 10 DERNIERES COURSES
-	// calcul des dates de la semaine actuelle (Lundi → Dimanche)
+
 	const today = new Date();
+	const end = today.toISOString().split('T')[0]; 
 
-	// premier jour de la semaine : lundi
-	const firstDayOfWeek = new Date(today);
-	const day = today.getDay(); // 0 = dimanche, 1 = lundi, ...
-	const diffToMonday = (day === 0 ? -6 : 1 - day); // si dimanche (0), recule de 6 jours
-	firstDayOfWeek.setDate(today.getDate() + diffToMonday);
+	const oneYearAgo = new Date();
+	oneYearAgo.setMonth(today.getMonth() - 12);
+	const start = oneYearAgo.toISOString().split('T')[0];
 
-	// dernier jour de la semaine : dimanche
-	const lastDayOfWeek = new Date(firstDayOfWeek);
-	lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
-
-	// format ISO "YYYY-MM-DD" pour l’API
-	const start = firstDayOfWeek.toISOString().split('T')[0];
-	const end = lastDayOfWeek.toISOString().split('T')[0];
 
 	const runsResponse = await fetch(`http://localhost:8000/api/user-activity?startWeek=${start}&endWeek=${end}`, {
 		method: "GET",
@@ -123,27 +115,6 @@ export async function POST(req) {
 	const timeout = setTimeout(() => controller.abort(), 5000);
 
 	try{
-		// // initialise l'historique de l'user si nécessaire
-		// if(!chatHistory[userId])chatHistory[userId]=[];
-		// // ajoute le message user dans l'historique
-		// chatHistory[userId].push({ role: "user", content: cleanMessage });
-		// // purge des anciens messages si on dépasse les 20
-		// if (chatHistory[userId].length > maxHistory) {
-		// 	chatHistory[userId] = chatHistory[userId].slice(-maxHistory);
-		// }
-		// // génère un résumé automatique des 5 derniers messages
-		// const messagesSummary=chatHistory[userId].slice(-5);
-
-		// const summaryResponse = await client.chat.complete({
-		// 	model: "mistral-small-2506",
-		// 	messages: [
-		// 	{ role: "system", content: "Résume les points clés de cette conversation pour que le coach IA garde le contexte sans détails inutiles." },
-		// 	...messagesSummary
-		// 	],
-		// 	max_tokens: 150
-		// }, { signal: controller.signal });
-
-		// const historySummary = summaryResponse.choices[0].message.content;
 
 		// * NOTE: PROMPTS POUR L'USER ET POUR L'IA
 		// Prompt du coach IA pour son personna
@@ -152,8 +123,6 @@ export async function POST(req) {
 			Ton rôle : aider chaque utilisateur à progresser selon son niveau et ses objectifs, en restant toujours positif et encourageant.
 			Tu donnes des recommandations simples, concrètes, adaptées et réalistes, sans mettre l’utilisateur en danger.
 			Avant de donner un conseil, tu poses des questions pour personnaliser tes réponses selon le niveau (débutant / intermédiaire / expert) et les contraintes de l’utilisateur.
-			Tu inclus automatiquement les données de course de l'utilisateur dans tes analyses.
-			Tu te référe aux performances récentes de l'utilisateur pour ajuster les conseils.
 			Tu adaptes les recommandations selon le niveau et les capacités de l'utilisateur.
 
 			Règles principales :
@@ -161,21 +130,27 @@ export async function POST(req) {
 			- Ne jamais juger, rester positif
 			- Conseils réalistes, sans mise en danger
 			- Réponses courtes et actionnables (exercices, temps, séries, alimentation)
+			- analyse automatiquement les données de l'utilisateur (dernières courses, intensité, fréquence, distance, habitudes, objectif)
+			- référes toi aux performances récentes de l'utilisateur pour ajuster les conseils.
 			- Résume automatiquement les informations importantes de l’historique de conversation avant d’ajouter les nouvelles questions ou réponses
-			- Si douleur ou blessure → priorité sécurité + suggérer de consulter un professionnel si nécessaire
+			- si nutrition pré-course → génère réponse personnalisée avec un timing des repas (3h,1h et 30 min avant) et les amilments recommandés et hydratation
+			- si préparation d'objectif → évalue la faisabilité : réalisme de l'objectif selon les données actuelles, étapes intermédiaires recommandées et types d'entrainements à privilégier
+			- Si douleur ou blessure → priorité sécurité + suggérer de consulter un professionnel si nécessaire,
 			- Si question hors sujet → répondre gentiment et proposer de revenir au sport/nutrition
 			- Si données manquantes → poser 1 ou 2 questions simples pour compléter
 			- Adapter le langage selon le niveau (débutant / intermédiaire / expert)
+			Tu dois répondre uniquement en texte Markdown standard.
+			N'ajoute jamais de classes CSS, jamais de balises HTML, jamais de style inline.
+			Si tu fais une liste, utilise simplement des "-".
+			Si tu fais un titre, utilise ## ou ###.
+
 
 			À chaque réponse :
 			1. Reformuler brièvement l’objectif de l'utilisateur pour montrer l'écoute
 			2. Donner un plan clair ou un conseil concret, en prenant en compte les données de course et les performances récentes
 			3. Encourager pour rester motivé et renforcer la confiance
-
-			Mise en page à chaque réponse : 
-			- points séparés par des lignes
-			- numéros ou emojis (peu) pour chaque conseil
-			- sauts de ligne pour séparer les idées`;
+			4. Mets des titres pour tes conseils
+			5. retire le titre des encouragements et du résumé`;
 
 
 		const userPrompt=`Voici le profil et les données récentes de l'utilisateur :
@@ -189,8 +164,8 @@ export async function POST(req) {
 		const response = await client.chat.complete({
 			model: "mistral-small-2506",
 			messages: [
-			{ role: "system", content: systemPrompt },
-			{ role: "user", content: userPrompt }
+				{ role: "system", content: systemPrompt },
+				{ role: "user", content: userPrompt }
 			],
 			temperature: 0.4,
 			max_tokens: 300
@@ -200,7 +175,7 @@ export async function POST(req) {
 		// annule le timeout si IA mistral répond à temps
 		clearTimeout(timeout);
 	
-		// récupère le texte généré par l’IA et l'ajoute à l'historique
+		// récupère le texte généré par l’IA
 		const reply = response.choices[0].message.content;
 		// chatHistory[userId].push({ role: "assistant", content: reply });
 	

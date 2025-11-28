@@ -50,6 +50,7 @@ function getWeekHeartRateData(runningData, selectedDate){
 export default function WeekHeartRateChart({ runningData }){
 	// const { StartEndWeek } = useMockData();
 	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [lineColor, setLineColor] = useState('#f2f3ff');
  
 	const weekData = getWeekHeartRateData(runningData, selectedDate);
 	// console.log("weekdata:", weekData)
@@ -70,18 +71,16 @@ export default function WeekHeartRateChart({ runningData }){
 			</div>
 			<p className={Styles.bpm_title}>Fréquence cardiaque moyenne</p>
 			<ResponsiveContainer width={503} height={350}>
-				<BarChart data={weekData} >
+				<BarChart data={weekData} onMouseEnter={()=>setLineColor("#0b23f4")} onMouseLeave={()=>setLineColor("#f2f3ff")}>
 				<CartesianGrid strokeDasharray="3 3" vertical={false}/>
 				<XAxis dataKey="label" tickLine={false} orientation="bottom" dy={10} tick={{fontSize:12}}/>
 				<YAxis tickLine={false} domain={[130, 187]} ticks={[130, 145, 160, 187]} tick={{fontSize:10}}/>
-				<Tooltip />
-				{/* <Legend iconType="circle" iconSize={8} align="left" wrapperStyle={{ fontSize: 12 }}/> */}
 				<Bar dataKey="min" fill="#fcc1b6" radius={30} barSize={14} name="Min" legendType="square"/>
 				<Bar dataKey="max" fill="#f4320b" radius={30} barSize={14} name="Max" legendType="square"/>
-				<Line type="monotone" dataKey="average" stroke="#0b23f4" dot name="Moyenne BPM" legendType="line"/>
+				<Line type="monotone" dataKey="average" stroke={lineColor} strokeWidth={3} dot={{ r: 3 ,stroke: '#0b23f4',fill: '#0b23f4'}} name="Moyenne BPM" legendType="line" activeDot={{ r: 5, stroke: '#0b23f4', strokeWidth: 2, fill: '#0b23f4' }}/>
 				<Legend
 					payload={[
-					{ value: 'Moyenne BPM', type: 'line', color: '#0b23f4' },
+					{ value: 'Moyenne BPM', type: 'line', color: '#f2f3ff' },
 					{ value: 'Max', type: 'square', color: '#f4320b' },
 					{ value: 'Min', type: 'square', color: '#fcc1b6' },
 					]}

@@ -6,9 +6,7 @@
 .left_column{
 	display: flex;
 	justify-content: center;
-	/* align-items: center; */
 	flex-direction: column;
-	/* width: 632px; */
 	width: 632px;
 	height: 100%;
 }
@@ -65,7 +63,7 @@
 	background-position: center;
 	background-size: cover;
 	width: 808px;
-	height: 140vh;
+	height: 100vh;
 	position: relative;
 }
 .phrase{

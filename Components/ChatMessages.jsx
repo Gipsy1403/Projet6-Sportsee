@@ -29,16 +29,18 @@ export default function ChatMessages({ messages,loading }) {
 				)}
 				{msg.role === "assistant" ? (
 					<div className={`${Styles.bubble} ${Styles.ai_bubble}`}>
-						<ReactMarkdown>{msg.content}</ReactMarkdown>
+						<ReactMarkdown skipHtml={false}
+						components={{
+							h1: ({ children }) => <h1 className={Styles.titreh1}>{children}</h1>,
+							h2: ({ children }) => <h2 className={Styles.titreh2}>{children}</h2>,
+							h3: ({ children }) => <h3 className={Styles.titreh3}>{children}</h3>,
+							ul: ({ children }) => <ul className={Styles.ul}>{children}</ul>,
+							li: ({ children }) => <li className={Styles.li}>{children}</li>,
+							p: ({ children }) => <p className={Styles.p}>{children}</p>,
+            				}}
+						>{msg.content}</ReactMarkdown>
 					</div>
 				) : (
-				// <p className={`${Styles.bubble} ${
-				// 	msg.role === "user" 
-				// 		? Styles.user_bubble 
-				// 		: msg.role === "assistant"
-				// 		? Styles.ai_bubble
-				// 		:Styles.error_bubble
-				// }`}>
 					<p className={`${Styles.bubble} ${
 						msg.role === "user"
 						? Styles.user_bubble
@@ -69,11 +71,8 @@ export default function ChatMessages({ messages,loading }) {
 				height={32}
 				className={Styles.avatar}
 				/>
-				<div className={Styles.loader_dots}>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
+				<div>
+					<span className={Styles.loader}></span>
 				</div>
 			</div>
 		)}

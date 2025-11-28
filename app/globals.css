@@ -58,13 +58,22 @@ p,li{
 	font-weight: 400;
 	font-size: 14px;
 }
+/* *********APPARITION LENTE DES PAGES*********** */
+.page-fade {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.page-fade.visible {
+  opacity: 1;
+}
 /* *********HEADER*********** */
 header{
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	height: 49px;
-	margin: 3rem 7rem 5rem 7rem;
+	margin: 3rem 3rem 5rem 3rem;
 }
 .logo{
 	width: 157px;
@@ -83,6 +92,9 @@ header{
 	padding: 0 20px;
 	cursor: pointer;
 }
+.bar_navigation li:hover{
+	color: var(--primary)
+}
 .bar_navigation li:last-child{
 	border-left: 2px solid var(--primary) ;
 	color: var(--primary)
@@ -93,11 +105,12 @@ footer{
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	width: 100%;
+	/* width: 100%; */
 	height: 41px;
 	background-color: white;
 	padding: 10px 30px;
-	padding: 0 5rem;
+	/* padding: 0 5rem; */
+	margin: 0 auto;
 }
 .icon_copyright{
 	font-size: 12px;

@@ -10,6 +10,7 @@ import { useUser } from "@/Components/GlobalContext";
 import Link from "next/link";
 import Header from "@/Components/Header";
 import Footer from "@/Components/Footer";
+import EffectsPages from "@/Components/EffectPage";
 // import userActivity from"@/src/mocks/userActivity.json"
 // import userInfo from"@/src/mocks/userInfo.json"
 
@@ -64,8 +65,8 @@ function weekDistance(data, range) {
     const end = new Date(range.end);
     return date >= start && date <= end;
   });
-
-  return weekSessions.reduce((sum, session) => sum + session.distance, 0);
+  const total=weekSessions.reduce((sum, session) => sum + session.distance, 0);
+  	return Number(total.toFixed(1));
 }
 
 function formatDateFR(dateString) {
@@ -159,82 +160,85 @@ export default function PageDashboard() {
 
   return (
 	<>
-		<Header/>
-		<section >
-			<form className={Styles.form_coachAI}>
-				<input
-				type="text"
-				value={search}
-				placeholder="Posez vos questions sur votre programme, vos performances ou vos objectifs."
-				onChange={(e)=>setSearch(e.target.value)}
-					/>
-				<button>Lancer une conversation</button>
-			</form>
-			<div className={Styles.dashboard_profile_container}>
-				<div className={Styles.dashboard_profile}>
-					<Image
-					src={"/assets/images/Photo profil.png"}
-					alt="Photo de profil"
-					width={104}
-					height={117}/>
-					<div>
-						<h4>{profile.firstName} {profile.lastName}</h4>
-						<p>Membre depuis le <DateFormated date={profile.createdAt}/></p>
-					</div>
-				</div>
-				<div className={Styles.dashboard_distance}>
-					<p>Distance totale parcourue</p>
-					<div className={Styles.dashboard_distance_nbre}>
+		<EffectsPages>
+			<Header/>
+			<section >
+				<div className={Styles.conversation}>
+					<div className={Styles.text}>
 						<Image
-						src={"/assets/images/OUTLINE.png"}
-						alt="icone qu'une main tenant un fanion de victoire"
-						width={34}
-						height={34}/>
-						<h4>{statistics.totalDistance} km</h4>
+							src={"/assets/images/Icone AI.png"}
+							alt="Photo de profil"
+							width={16}
+							height={16}
+						/>
+						<h5>Posez vos questions sur votre programme, vos performances ou vos objectifs.</h5>
 					</div>
+					<button><Link href={"/chat"}>Lancer une conversation</Link></button>
 				</div>
-			</div>
-			<h4 className={Styles.dashboard_performance_title}>Vos dernières performances</h4>
-			{activities && activities.length>0? (
-				<div className={Styles.dashboard_performance_month}>
-					<RunningChart runningData={activities}/>
-					<WeekHeartRateChart runningData={activities}/>
-				</div>
-			):"le graphique ne s'affiche pas"
-			}
-			<div>
-				<h4>Cette semaine</h4>
-				<h5 className={Styles.dashboard_performance_week_date}>Du {formatDateFR(range.start)} au {formatDateFR(range.end)}</h5>
-				<div className={Styles.dashboard_performance_week}>
-					<ObjectifsChart  runningData={activities} weeklyGoal={profile.weeklyGoal} weekRange={range}/>
-					<div className={Styles.dashboard_performance_activities}>
-						<div className={Styles.dashboard_performance_activity}>
-							{/*// * NOTE:  code mis ainsi car react n'accepte pas l'apostrophe dans ce p */}
-							<p>{"Durée d'activité"}</p>
-							<h4 className={Styles.dashboard_performance_duration}>{weekDuration(activities, range)} <span>minutes</span></h4>
-						</div>
-						<div className={Styles.dashboard_performance_activity}>
-							<p>Distance</p>
-							<h4 className={Styles.dashboard_performance_distance}>{weekDistance(activities, range)} <span>kilomètres</span></h4>
+				<div className={Styles.dashboard_profile_container}>
+					<div className={Styles.dashboard_profile}>
+						<Image
+						src={"/assets/images/Photo profil.png"}
+						alt="Photo de profil"
+						width={104}
+						height={117}/>
+						<div>
+							<h4>{profile.firstName} {profile.lastName}</h4>
+							<p>Membre depuis le <DateFormated date={profile.createdAt}/></p>
 						</div>
 					</div>
+					<div className={Styles.dashboard_distance}>
+						<p>Distance totale parcourue</p>
+						<div className={Styles.dashboard_distance_nbre}>
+							<Image
+							src={"/assets/images/OUTLINE.png"}
+							alt="icone qu'une main tenant un fanion de victoire"
+							width={34}
+							height={34}/>
+							<h4>{statistics.totalDistance} km</h4>
+						</div>
+					</div>
 				</div>
-			</div>
-			<div className={Styles.dashboardAI_container}>
-				<Image
-					src={"/assets/images/Icons.png"}
-					alt="icone d'un calendrier"
-					width={66}
-					height={66}
-				/>
-				<h3>Créez votre planning d'entraînements <span>intelligent</span></h3>
-				<p>Notre IA vous aide à bâtir un planning 100 % personnalisé selon vos objectifs, votre <span>niveau et votre emploi du temps.</span></p>
-
-				<h5>Commencer</h5>
-
-			</div>
-		</section>
-		<Footer/>
+				<h4 className={Styles.dashboard_performance_title}>Vos dernières performances</h4>
+				{activities && activities.length>0? (
+					<div className={Styles.dashboard_performance_month}>
+						<RunningChart runningData={activities}/>
+						<WeekHeartRateChart runningData={activities}/>
+					</div>
+				):"le graphique ne s'affiche pas"
+				}
+				<div>
+					<h4>Cette semaine</h4>
+					<h5 className={Styles.dashboard_performance_week_date}>Du {formatDateFR(range.start)} au {formatDateFR(range.end)}</h5>
+					<div className={Styles.dashboard_performance_week}>
+						<ObjectifsChart  runningData={activities} weeklyGoal={profile.weeklyGoal} weekRange={range}/>
+						<div className={Styles.dashboard_performance_activities}>
+							<div className={Styles.dashboard_performance_activity}>
+								{/*// * NOTE:  code mis ainsi car react n'accepte pas l'apostrophe dans ce p */}
+								<p>{"Durée d'activité"}</p>
+								<h4 className={Styles.dashboard_performance_duration}>{weekDuration(activities, range)} <span>minutes</span></h4>
+							</div>
+							<div className={Styles.dashboard_performance_activity}>
+								<p>Distance</p>
+								<h4 className={Styles.dashboard_performance_distance}>{weekDistance(activities, range)} <span>kilomètres</span></h4>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className={Styles.dashboardAI_container}>
+					<Image
+						src={"/assets/images/Icons.png"}
+						alt="icone d'un calendrier"
+						width={66}
+						height={66}
+					/>
+					<h3>Créez votre planning d'entraînements <span>intelligent</span></h3>
+					<p>Notre IA vous aide à bâtir un planning 100 % personnalisé selon vos objectifs, votre <span>niveau et votre emploi du temps.</span></p>
+					<h5>Commencer</h5>
+				</div>
+			</section>
+			<Footer/>
+		</EffectsPages>
 	</>
   );
 }

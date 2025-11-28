@@ -5,6 +5,7 @@ import Footer from "@/Components/Footer";
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { GlobalProvider } from "@/Components/GlobalContext";
+import EffectsPages from "@/Components/EffectPage";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -18,14 +19,13 @@ export const metadata = {
   description: "",
 };
 
+
 export default function RootLayout({ children }) {
   return (
 	<html lang="fr">
 		<body suppressHydrationWarning className={`${inter.variable}`}>
 		<GlobalProvider>
-			{/* <Header /> */}
 			{children}
-			{/* <Footer /> */}
 		</GlobalProvider>
 		</body>
 	</html>
