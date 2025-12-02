@@ -5,14 +5,18 @@ import Link from "next/link"
 
 
 export default function Header(){
+	// Fonction pour déconnecter l'utilisateur
 	const handleLogout = async () => {
-		await fetch("/api/logout", {
-			method: "POST",
-			credentials: "include" // très important pour envoyer le cookie
-			});
+	// Appel à l'API pour la déconnexion
+	await fetch("/api/logout", {
+		method: "POST",              // méthode POST pour signaler la déconnexion
+		credentials: "include"       // inclut les cookies (très important pour que le serveur supprime la session)
+	});
 
-		window.location.href = "/login"; // redirection après déconnexion
+	// Redirige l'utilisateur vers la page de login après la déconnexion
+	window.location.href = "/login";
 	};
+
 	return(
 		<header>
 			<Link href="/">

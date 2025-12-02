@@ -15,15 +15,7 @@ export async function POST(req) {
 	if (!token) {
 		return new Response(JSON.stringify({ error: "Token manquant" }), { status: 401 });
 	}
-// *******************************
-	const profileResponse = await fetch(`http://localhost:8000/api/user-info`, {
-		method: "GET",
-		headers: {cookie: cookieHeader},
-	});
-	const user = await profileResponse.json();
 
-
-// *****************************
 	// décode le token pour obtenir l'ID utilisateur
 	let userId;
 	try {
@@ -34,14 +26,23 @@ export async function POST(req) {
 		return new Response(JSON.stringify({ error: "Token invalide" }), { status: 401 });
 	}
 
-	// * NOTE: RECUPERE LE PROFIL DE L'USER
+	
+	// * NOTE: APPEL DE L'API POUR RECUPERER L'UTILISATEUR
 
-	// console.log("### USER RECU DU BACKEND ###", user);
+	const profileResponse = await fetch(`http://localhost:8000/api/user-info`, {
+		method: "GET",
+		headers: {cookie: cookieHeader},
+	});
+	const user = await profileResponse.json();
+
+
+	// * NOTE: RECUPERE LE PROFIL DE L'USER
 
 	const userProfileSummary = `Profil utilisateur :
 		- Âge : ${user.age} ans  
 		- Poids : ${user.weight} kg  
 		- Objectif course hebdomadaire : ${user.weeklyGoal}`;
+
 
 	// * NOTE: RECUPERE LES 10 DERNIERES COURSES
 
@@ -53,6 +54,9 @@ export async function POST(req) {
 	const start = oneYearAgo.toISOString().split('T')[0];
 
 
+
+	// * NOTE: APPEL DE L'API POUR RECUPERER LES ACTIVITES DE L'UTILISATEUR
+
 	const runsResponse = await fetch(`http://localhost:8000/api/user-activity?startWeek=${start}&endWeek=${end}`, {
 		method: "GET",
 		headers: {cookie: cookieHeader},
@@ -60,26 +64,46 @@ export async function POST(req) {
 	if (!runsResponse.ok) {
 		return new Response(JSON.stringify({ error: "Impossible de récupérer les courses" }), { status: 500 });
 	}
+
+	// Récupère les données des courses depuis la réponse API et les transforme en JSON.
+	// Si la réponse est vide ou invalide, on utilise un tableau vide pour éviter les erreurs.
 	const runningData = await runsResponse.json() || [];
 
+	// Trie les courses par date, de la plus récente à la plus ancienne.
+	// new Date(b.date) - new Date(a.date) permet de comparer les dates en millisecondes.
 	const sortedRuns = runningData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+	// Sélectionne les 10 dernières courses uniquement.
+	// slice(0, 10) prend les éléments de l'index 0 à 9.
 	const last10Runs = sortedRuns.slice(0, 10);
 
+	// Déclare une variable qui contiendra le résumé des courses.
 	let runsSummary;
 
+	// Vérifie si le tableau last10Runs est vide (aucune course disponible).
 	if (last10Runs.length === 0) {
-		runsSummary = "Aucune course enregistrée pour le moment.";
+	// Si aucune course, affiche un message informatif.
+	runsSummary = "Aucune course enregistrée pour le moment.";
 	} else {
-		runsSummary = last10Runs.map((run, index) => 
-			`Course ${index + 1} : le ${new Date(run.date).toLocaleDateString()}, 
-			distance ${run.distance} km, 
-			durée ${run.duration} min, 
-			calories brûlées ${run.caloriesBurned}.`
-		).join("\n");
+	// Sinon, on crée un résumé pour chaque course.
+	runsSummary = last10Runs.map((run, index) => 
+		// Pour chaque course, on affiche :
+		// - le numéro de la course (index + 1),
+		// - la date formatée en format local,
+		// - la distance parcourue en km,
+		// - la durée en minutes,
+		// - les calories brûlées.
+		`Course ${index + 1} : le ${new Date(run.date).toLocaleDateString()}, 
+		distance ${run.distance} km, 
+		durée ${run.duration} min, 
+		calories brûlées ${run.caloriesBurned}.`
+	// On transforme le tableau de chaînes en une seule chaîne, avec un retour à la ligne entre chaque course.
+	).join("\n");
 	}
-// console.log("Résumé des courses :", runsSummary);
+
 
 	// * NOTE: RECUPERE ET NETTOIE LES MESSAGES
+
 	// Récupère le message du front
 	const { message } = await req.json();
 	// nettoie le message en enlevant les espaces en début et fin puis supprime les balises HTML

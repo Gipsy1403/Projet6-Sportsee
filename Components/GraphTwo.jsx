@@ -10,57 +10,96 @@ import "dayjs/locale/fr";
 import Styles from "@/app/dashboard/dashboard.module.css";
 import { useUser } from "./GlobalContext";
 
-dayjs.extend(isoWeek);
-dayjs.extend(weekday);
-dayjs.extend(isBetween);
-dayjs.locale("fr");
+// 🔹 Étendre dayjs avec des plugins utiles
+dayjs.extend(isoWeek);     // pour travailler avec les semaines ISO (lundi = début)
+dayjs.extend(weekday);     // pour accéder facilement aux jours de la semaine
+dayjs.extend(isBetween);   // pour vérifier si une date est entre deux autres
+dayjs.locale("fr");        // définir la langue en français
 
-// 🔹 Calcul moyenne de la semaine
-function calculateWeekAverage(weekData){
+// 🔹 Calcul de la moyenne de la semaine
+function calculateWeekAverage(weekData) {
+    // Ne garder que les jours où il y a des données (avgBpm != null)
     const daysWithData = weekData.filter(day => day.avgBpm !== null);
+
+    // Additionner toutes les moyennes de bpm
     const total = daysWithData.reduce((sum, day) => sum + day.avgBpm, 0);
+
+    // Retourne la moyenne si on a des jours avec données, sinon 0
     return daysWithData.length > 0 ? total / daysWithData.length : 0;
 }
 
-// 🔹 Préparer les données pour la semaine
-function getWeekHeartRateData(bpmData, selectedDate){
+// 🔹 Préparer les données pour afficher la semaine complète
+function getWeekHeartRateData(bpmData, selectedDate) {
+    // Calculer le lundi et le dimanche de la semaine de la date sélectionnée
     const weekStart = dayjs(selectedDate).isoWeekday(1).startOf("day"); // lundi
-    const weekEnd = dayjs(selectedDate).isoWeekday(7).endOf("day");   // dimanche
+    const weekEnd = dayjs(selectedDate).isoWeekday(7).endOf("day");     // dimanche
 
-    // créer les 7 jours
+    // Créer un tableau avec les 7 jours de la semaine
     const weekDays = [];
     for (let i = 0; i < 7; i++) {
-        const day = weekStart.add(i, "day");
-        const label = day.format("ddd").replace(".","").charAt(0).toUpperCase() + day.format("ddd").replace(".", "").slice(1);
+        const day = weekStart.add(i, "day"); // jour courant
+        const label = day.format("ddd")      // nom court du jour (ex: lun.)
+            .replace(".", "")                // enlever le point
+            .charAt(0).toUpperCase() +       // mettre la première lettre en majuscule
+            day.format("ddd").replace(".", "").slice(1); // reste du nom
 
-	//    const activity=heartRate.bpmData.find(a=>a.date===day.format("YYYY-MM-DD"))
-        weekDays.push({ label, date: day.format("YYYY-MM-DD"), minBpm: null, maxBpm: null, avgBpm: null });
+        // Ajouter le jour avec des valeurs initiales null pour bpm
+        weekDays.push({ 
+            label, 
+            date: day.format("YYYY-MM-DD"), 
+            minBpm: null, 
+            maxBpm: null, 
+            avgBpm: null 
+        });
     }
 
-    // associer les données existantes
+    // Associer les données existantes aux jours correspondants
     if (Array.isArray(bpmData)) {
         bpmData.forEach((entry) => {
             const d = dayjs(entry.date);
-            if (d.isBetween(weekStart, weekEnd, null, "[]")) {
-                const index = d.isoWeekday() - 1;
+
+            // Vérifie si la date de la donnée est dans la semaine
+            if (d.isBetween(weekStart, weekEnd, null, "[]")) { // [] inclus
+                const index = d.isoWeekday() - 1; // 0 = lundi, 6 = dimanche
+
+                // Remplit les bpm existants dans le tableau
                 weekDays[index].minBpm = entry.minBpm;
                 weekDays[index].maxBpm = entry.maxBpm;
                 weekDays[index].avgBpm = entry.avgBpm;
             }
         });
     }
+
+    // Retourne la semaine complète avec bpm pour chaque jour (ou null si pas de données)
     return weekDays;
 };
 
-export default function WeekHeartRateChart(){
-     const { heartRate, goToNextWeek, goToPreviousWeek } = useUser();
+
+// Composant pour afficher le graphique de la fréquence cardiaque hebdomadaire
+export default function WeekHeartRateChart() {
+    // Récupère depuis le contexte global :
+    // - les données de fréquence cardiaque
+    // - les fonctions pour naviguer entre les semaines
+	const { heartRate, goToNextWeek, goToPreviousWeek } = useUser();
+
+    // État pour la date sélectionnée (par défaut aujourd'hui)
     const [selectedDate, setSelectedDate] = useState(new Date());
+
+    // État pour la couleur de la ligne du graphique (modifiable si besoin)
     const [lineColor, setLineColor] = useState('#f2f3ff');
 
+    // Prépare les données de la semaine complète pour le graphique
     const weekData = getWeekHeartRateData(heartRate.bpmData, selectedDate);
+
+    // Calcule le lundi de la semaine sélectionnée
     const weekStart = dayjs(selectedDate).isoWeekday(1).startOf("day"); 
+
+    // Calcule le dimanche de la semaine sélectionnée
     const weekEnd = dayjs(selectedDate).isoWeekday(7).endOf("day"); 
+
+    // Calcule la moyenne des bpm de la semaine
     const weekAverage = calculateWeekAverage(weekData);
+
 
     return (
         <section>
@@ -68,22 +107,17 @@ export default function WeekHeartRateChart(){
                 <div className={Styles.bpm_header}>
                     <h4>{Math.round(weekAverage)} BPM</h4>
                     <div>
-<div>
-    <button onClick={() => {
-        const prevWeek = dayjs(selectedDate).subtract(1, "week").toDate();
-        setSelectedDate(prevWeek);
-        goToPreviousWeek();
-    }}>&lt;</button>
-
-    <span>{weekStart.format("DD MMM")} - {weekEnd.format("DD MMM")}</span>
-
-    <button onClick={() => {
-        const nextWeek = dayjs(selectedDate).add(1, "week").toDate();
-        setSelectedDate(nextWeek);
-        goToNextWeek();
-    }}>&gt;</button>
-</div>
-
+					<button onClick={() => {
+						const prevWeek = dayjs(selectedDate).subtract(1, "week").toDate();
+						setSelectedDate(prevWeek);
+						goToPreviousWeek();
+					}}>&lt;</button>
+					<span>{weekStart.format("DD MMM")} - {weekEnd.format("DD MMM")}</span>
+					<button onClick={() => {
+						const nextWeek = dayjs(selectedDate).add(1, "week").toDate();
+						setSelectedDate(nextWeek);
+						goToNextWeek();
+					}}>&gt;</button>
                     </div>
                 </div>
                 <p className={Styles.bpm_title}>Fréquence cardiaque moyenne</p>

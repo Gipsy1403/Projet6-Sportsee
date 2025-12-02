@@ -20,56 +20,80 @@ function ConvertMinutesToHours({statistics}){
 }
 
 
+// Composant principal de la page profil
 export default function PageProfile() {
+    // Déclare un état pour stocker les infos du profil (initialement null)
 	const [profile, setProfile] = useState(null);
+
+    // Déclare un état pour stocker les statistiques utilisateur (initialement null)
 	const [statistics, setStatistics] = useState(null);
 
+    // Déclare un état pour afficher un message à l'utilisateur (ex: erreur)
 	const [message, setMessage] = useState("");
 
+    // useEffect sert à exécuter du code après le premier rendu du composant
 	useEffect(() => {
-	const handleGetProfile = async () => {
-		try {
-		const res = await fetch("http://localhost:8000/api/user-info", {
-			method: "GET",
-			credentials: "include",
-		});
+        // Fonction interne asynchrone pour récupérer les infos du profil
+	    const handleGetProfile = async () => {
+		    try {
+                // Envoie une requête GET vers l'API pour récupérer les infos utilisateur
+		        const res = await fetch("http://localhost:8000/api/user-info", {
+			        method: "GET",
+			        credentials: "include", // envoie les cookies pour l'authentification
+		        });
 
-		const data = await res.json();
+                // Transforme la réponse en JSON pour pouvoir l'utiliser
+		        const data = await res.json();
 
-		if (res.ok) {
-			setProfile(data.profile);
-			setStatistics(data.statistics);
+                // Si la réponse est OK (statut 200)
+		        if (res.ok) {
+                    // On met à jour l'état 'profile' avec les infos du profil
+			        setProfile(data.profile);
 
-			console.log("Profil :", data);
-		} else {
-			setMessage(data.message || "Erreur lors de la récupération du profil");
-		}
-		} catch (err) {
-		console.error(err);
-		setMessage("Erreur réseau");
-		}
-	};
+                    // On met à jour l'état 'statistics' avec les statistiques
+			        setStatistics(data.statistics);
 
-	handleGetProfile();
-	}, []);
+                    // Affiche les données dans la console pour débogage
+			        console.log("Profil :", data);
+		        } else {
+                    // Si la réponse n'est pas OK, on affiche un message d'erreur
+			        setMessage(data.message || "Erreur lors de la récupération du profil");
+		        }
+		    } catch (err) {
+                // Si erreur réseau ou autre problème, on affiche un message d'erreur
+		        console.error(err);
+		        setMessage("Erreur réseau");
+		    }
+	    };
 
+        // Appelle la fonction pour récupérer les infos dès que le composant se charge
+	    handleGetProfile();
+	}, []); // [] signifie que l'effet ne s'exécute qu'une seule fois, au montage du composant
+
+    // Si le profil n'est pas encore chargé, affiche un message de chargement
 	if (!profile) {
-	return <p>Chargement du profil...</p>;
+	    return <p>Chargement du profil...</p>;
 	}
 
+    // Récupère la taille de l'utilisateur en centimètres
+	const heightCm = profile.height;
 
-	const heightCm= profile.height;
-	const meter=Math.floor(heightCm/100);
-	const cm= heightCm%100;
-	const heightMeter=`${meter}m${cm}`
+    // Transforme les centimètres en mètres entiers
+	const meter = Math.floor(heightCm / 100);
 
-	const genderFR={
-		male:"Masculin",
-		female :"Féminin",
-		other :"Autre"
+    // Récupère les centimètres restants
+	const cm = heightCm % 100;
+
+    // Construit une chaîne affichable du type "1m75"
+	const heightMeter = `${meter}m${cm}`;
+
+    // Dictionnaire pour traduire le genre en français
+	const genderFR = {
+		male: "Masculin",
+		female: "Féminin",
+		other: "Autre"
 	};
 
-console.log("Gender reçu :", profile.gender);
 
   	return (
 		<>

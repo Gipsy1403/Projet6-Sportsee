@@ -26,29 +26,72 @@ export default function ChatPage() {
 	const MAX_LENGTH=500;
 
 	// Fonction appelée quand on clique sur "Envoyer"
-	const handleSend = async (e) => {
-		e?.preventDefault();
-		if (!textarea.trim()) return;
-		if(!conversationsStart)setConversationsStart(true);
+	// const handleSend = async (e) => {
+	// 	e?.preventDefault();
+	// 	if (!textarea.trim()) return;
+	// 	if(!conversationsStart)setConversationsStart(true);
 
+	// 	if (textarea.length > MAX_LENGTH) {
+	// 		setMessages((prev) => [
+	// 			...prev,
+	// 			{
+	// 			role: "error",
+	// 			content: `Message trop long. Maximum autorisé : ${MAX_LENGTH} caractères.`,
+	// 			},
+	// 		]);
+	// 		return;
+	// 	}
+
+	// 	const userMessage = { role: "user", content: textarea };
+	// 	setMessages((prev) => [...prev, userMessage]);
+	// 	setTextarea("");
+	// 	setLoading(true);
+	// 	// réinitialise l'erreur avant une nouvelle requête
+	// 	setError(null); 
+
+
+	// Déclare une fonction asynchrone pour envoyer un message.
+	// 'e' représente l'événement du formulaire ou du bouton.
+	const handleSend = async (e) => {
+	// Empêche le rechargement de la page si c'est un formulaire.
+		e?.preventDefault();
+
+		// Vérifie si le champ de texte n'est pas vide ou rempli seulement d'espaces.
+		// Si vide, on quitte la fonction sans rien faire.
+		if (!textarea.trim()) return;
+
+		// Si la conversation n'a pas encore commencé, on la marque comme démarrée.
+		if(!conversationsStart) setConversationsStart(true);
+
+		// Vérifie si le message dépasse la longueur maximale autorisée.
 		if (textarea.length > MAX_LENGTH) {
+			// Si trop long, on ajoute un message d'erreur dans la liste des messages.
 			setMessages((prev) => [
-				...prev,
+				...prev, // garde tous les messages précédents
 				{
-				role: "error",
-				content: `Message trop long. Maximum autorisé : ${MAX_LENGTH} caractères.`,
+					role: "error", // rôle spécial pour identifier le message comme une erreur
+					content: `Message trop long. Maximum autorisé : ${MAX_LENGTH} caractères.`,
 				},
 			]);
+			// On quitte la fonction pour ne pas envoyer le message.
 			return;
 		}
 
+		// Prépare le message de l'utilisateur sous forme d'objet.
 		const userMessage = { role: "user", content: textarea };
-		setMessages((prev) => [...prev, userMessage]);
-		setTextarea("");
-		setLoading(true);
-		// réinitialise l'erreur avant une nouvelle requête
-		setError(null); 
 
+		// Ajoute le message de l'utilisateur à la liste des messages.
+		setMessages((prev) => [...prev, userMessage]);
+
+		// Vide le champ de texte après envoi.
+		setTextarea("");
+
+		// Active le chargement (par exemple, pour afficher un spinner pendant la réponse).
+		setLoading(true);
+
+		// Réinitialise l'erreur avant d'envoyer une nouvelle requête.
+		setError(null);
+		
 		try {
 			const res = await fetch("/api/chat", {
 				method: "POST",
