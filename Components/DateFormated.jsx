@@ -1,6 +1,6 @@
 export default function DateFormated({date}){
 	  if (!date) {
-    return <span>…</span>;   // affichage temporaire (tu peux choisir)
+    return <span>…</span>;
   }
 	const dateObjet=new Date(date);
 	const formatedDate=dateObjet.toLocaleDateString("fr-FR",{

@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import Styles from "@/app/login/login.module.css"
-// import { useUser } from "./GlobalContext";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
-	// const {user}=useUser();
 	const [username, setUsername]=useState("");
 	const [password, setPassword]=useState("");
 	const [message, setMessage] = useState("");

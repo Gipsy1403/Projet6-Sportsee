@@ -6,9 +6,7 @@ import DateFormated from "@/Components/DateFormated";
 import { useState, useEffect } from "react";
 import Footer from "@/Components/Footer";
 import EffectsPages from "@/Components/EffectPage";
-// import userActivity from"@/src/mocks/userActivity.json"
-// import userInfo from"@/src/mocks/userInfo.json"
-// import { useUser } from "@/Components/GlobalContext";
+
 
 function ConvertMinutesToHours({statistics}){
 	const minutes=statistics.totalDuration;

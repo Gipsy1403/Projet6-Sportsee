@@ -97,12 +97,6 @@ export default function ChatPage() {
 
 				{/* Champ de saisie */}
 				<form onSubmit={handleSend} className={Styles.textarea_message}>
-					{/* <Image
-						src={"/assets/images/Icone AI (1).png"}
-						alt="bouton envoyer"
-						width={20}
-						height={20}
-					/> */}
 					<textarea
 						value={textarea}
 						onChange={(e) => {

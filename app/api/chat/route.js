@@ -2,11 +2,6 @@ import { Mistral } from "@mistralai/mistralai";
 import jwt from "jsonwebtoken";
 
 
-// tableau pour récupérer l'historique des messages
-// let chatHistory={};
-// maximum de messages gardés dans l'historique
-// const maxHistory=20;
-
 export async function POST(req) {
 	
 	// * NOTE: RECUPERATION TOKEN POUR AVOIR L'ID USER
@@ -112,7 +107,7 @@ export async function POST(req) {
 	const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
 	const controller = new AbortController();
 	// Timeout
-	const timeout = setTimeout(() => controller.abort(), 5000);
+	const timeout = setTimeout(() => controller.abort(), 10000);
 
 	try{
 
@@ -126,13 +121,13 @@ export async function POST(req) {
 			Tu adaptes les recommandations selon le niveau et les capacités de l'utilisateur.
 
 			Règles principales :
-			- Toujours encourager et valoriser l’utilisateur
+			- reste formel
 			- Ne jamais juger, rester positif
 			- Conseils réalistes, sans mise en danger
 			- Réponses courtes et actionnables (exercices, temps, séries, alimentation)
 			- analyse automatiquement les données de l'utilisateur (dernières courses, intensité, fréquence, distance, habitudes, objectif)
 			- référes toi aux performances récentes de l'utilisateur pour ajuster les conseils.
-			- Résume automatiquement les informations importantes de l’historique de conversation avant d’ajouter les nouvelles questions ou réponses
+			- Résume automatiquement les informations importantes de l’historique de conversation avant d’ajouter les nouvelles questions ou réponses, sans mettre de titre
 			- si nutrition pré-course → génère réponse personnalisée avec un timing des repas (3h,1h et 30 min avant) et les amilments recommandés et hydratation
 			- si préparation d'objectif → évalue la faisabilité : réalisme de l'objectif selon les données actuelles, étapes intermédiaires recommandées et types d'entrainements à privilégier
 			- Si douleur ou blessure → priorité sécurité + suggérer de consulter un professionnel si nécessaire,
@@ -146,11 +141,9 @@ export async function POST(req) {
 
 
 			À chaque réponse :
-			1. Reformuler brièvement l’objectif de l'utilisateur pour montrer l'écoute
-			2. Donner un plan clair ou un conseil concret, en prenant en compte les données de course et les performances récentes
-			3. Encourager pour rester motivé et renforcer la confiance
-			4. Mets des titres pour tes conseils
-			5. retire le titre des encouragements et du résumé`;
+			1. Reformule brièvement l’objectif de l'utilisateur pour montrer l'écoute sans mettre de titre
+			2. Donne un plan clair ou un conseil concret, en prenant en compte les données de course et les performances récentes
+			3. Mets seulement des titres pour les conseils`;
 
 
 		const userPrompt=`Voici le profil et les données récentes de l'utilisateur :

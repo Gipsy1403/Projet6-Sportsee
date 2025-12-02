@@ -3,16 +3,6 @@ import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import Styles from "@/app/dashboard/dashboard.module.css";
 
 
-
-// function datesWeek(user) {
-// 	const today=new Date();
-// 	const { monday, sunday } = currentWeek(today);
-// 	return user.runningData.filter(run=>{
-// 		const runDate=new Date(run.date);
-// 		return runDate>=monday&&runDate<=sunday;
-// 	})
-// }
-
 function datesWeek(runningData, start, end) {
 	const monday = new Date(start);
 	const sunday = new Date(end);
@@ -34,6 +24,22 @@ function calculObjectifs(runningData, start, end, weeklyGoal) {
 	];
 }
 
+function currentWeekStartEnd() {
+	const today = new Date();
+	const monday = new Date(today);
+	const day = monday.getDay(); // 0 = dimanche
+	const diff = (day === 0 ? -6 : 1 - day);
+	monday.setDate(monday.getDate() + diff);
+
+	const sunday = new Date(monday);
+	sunday.setDate(monday.getDate() + 6);
+
+	return {
+	start: monday.toISOString().split("T")[0],
+	end: sunday.toISOString().split("T")[0],
+	};
+}
+
 function labelAccord(value, name) {
 	if (name === "réalisées") {
 		return value <= 1 ? `${value} réalisée` : `${value} réalisées`;
@@ -44,12 +50,8 @@ function labelAccord(value, name) {
 		return `${value} ${name}`;
 }
 
-export default function ObjectifsChart({ runningData, weeklyGoal, weekRange }) {
-	// const { startEndWeek } = useMockData();
-	// const { start, end } = startEndWeek.range;
-	// const activities = startEndWeek.activities;
-	const{start,end}=weekRange;
-	
+export default function ObjectifsChart({ runningData, weeklyGoal}) {
+	const { start, end } = currentWeekStartEnd();
 	const objectifData=calculObjectifs(runningData, start,end, weeklyGoal);
 	const colors = ["#0b23f4", "#b6bdfc"];
 	const objectifAccomplished=objectifData[0].value;
@@ -103,7 +105,6 @@ export default function ObjectifsChart({ runningData, weeklyGoal, weekRange }) {
 				))}
 				</Pie>
 				<Tooltip />
-				{/* <Legend iconType="circle" iconSize={8}/> */}
 			</PieChart>
 		</div>
     </section>
